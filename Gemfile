@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'sinatra', :github => "sinatra/sinatra"
 
 # other dependencies
+gem 'json'
 gem 'haml'
 gem 'shotgun'
 gem 'google_drive'

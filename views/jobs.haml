@@ -1,0 +1,15 @@
+%h1= "Jobs"
+
+%form{ :action => "", :method => "post"}
+  %fieldset
+    %ol
+      %li
+        %label{:for => "name"} Spreadsheet Name:
+        %input{:type => "text", :name => "name", :class => "text", :value => @name}
+      / %li
+      /   %label{:for => "mail"} email:
+      /   %input{:type => "text", :name => "mail", :class => "text"}
+      / %li
+      /   %label{:for => "body"} Message:
+      /   %textarea{:name => "body"}
+    %input{:type => "submit", :value => "Send", :class => "button"}
