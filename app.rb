@@ -5,6 +5,7 @@ require "rubygems"
 require "google_drive"
 require "csv"
 require "json"
+require 'rest_client'
 
 class GDocTestRunner < Sinatra::Application
 

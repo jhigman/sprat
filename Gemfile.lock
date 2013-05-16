@@ -19,8 +19,10 @@ GEM
     haml (4.0.2)
       tilt
     httpauth (0.2.0)
+    json (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
+    mime-types (1.23)
     multi_json (1.7.2)
     multi_xml (0.5.3)
     multipart-post (1.2.0)
@@ -36,6 +38,8 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     shotgun (0.9)
       rack (>= 1.0)
     tilt (1.4.1)
@@ -46,5 +50,7 @@ PLATFORMS
 DEPENDENCIES
   google_drive
   haml
+  json
+  rest-client
   shotgun
   sinatra!

@@ -7,7 +7,7 @@ gem 'json'
 gem 'haml'
 gem 'shotgun'
 gem 'google_drive'
-gem 'google_drive'
+gem 'rest-client'
 
 # these are needed too?
 # gem 'rubygems'
