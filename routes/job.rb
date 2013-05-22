@@ -1,25 +1,22 @@
 get '/jobs' do
-  @name = session[:spreadsheet]
+  @spreadsheet = session[:spreadsheet]
+  @worksheet = session[:worksheet]
   haml :jobs
 end
 
 post '/jobs' do
 
-  puts "Running tests for spreadsheet : " + request["name"]
+  puts "Running tests for spreadsheet : " + request["spreadsheet"] + " (" + request["worksheet"] + ")"
 
-  doc = request["name"]
-  session[:spreadsheet] = doc
+  spreadsheet = request["spreadsheet"]
+  worksheet = request["worksheet"]
+  session[:spreadsheet] = spreadsheet
+  session[:worksheet] = worksheet
 
-  job = Job.new(doc, settings)
+  job = Job.new(spreadsheet, worksheet, settings)
 
-  results = job.exec 
+  job.exec 
 
-  id = Time.now.to_i
-
-  File.open("/tmp/#{id}.json", 'w') { |file| file.write(results.to_json) }
-
-  puts "Done!"
-
-  redirect "/results/#{id}" 
+  redirect "/results/#{job.id}" 
 
 end

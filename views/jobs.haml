@@ -4,12 +4,9 @@
   %fieldset
     %ol
       %li
-        %label{:for => "name"} Spreadsheet Name:
-        %input{:type => "text", :name => "name", :class => "text", :value => @name}
-      / %li
-      /   %label{:for => "mail"} email:
-      /   %input{:type => "text", :name => "mail", :class => "text"}
-      / %li
-      /   %label{:for => "body"} Message:
-      /   %textarea{:name => "body"}
+        %label{:for => "spreadsheet"} Spreadsheet Name:
+        %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
+      %li
+        %label{:for => "worksheet"} Worksheet Name:
+        %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
     %input{:type => "submit", :value => "Send", :class => "button"}

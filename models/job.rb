@@ -1,16 +1,27 @@
 class Job
 
-  def initialize(docname, settings)
-    @docname = docname
+  attr_accessor :id
+
+  def initialize(spreadsheet, worksheet, settings)
+    @spreadsheet = spreadsheet
+    @worksheet = worksheet
     @settings = settings
+    @id = Time.now.to_i
   end
 
   def exec()
+    
+    source = GDriveTestSource.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
+    
+    tester = Tester.new
 
-    source = GDriveTestSource.new(@docname, @settings.username, @settings.password)
-    tester = ApiTest.new(source, @settings.apikey)
+    source.reset_spreadsheet()
 
-    return tester.test_malaria_prevalence()
+    results = tester.run(source)
+
+    source.update_spreadsheet(results)
+
+    File.open("/tmp/#{@id}.json", 'w') { |file| file.write(results.to_json) }
 
   end
 
