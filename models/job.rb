@@ -15,6 +15,8 @@ class Job
     
     tester = Tester.new
 
+    source.update_status("Running")    
+
     source.reset_spreadsheet()
 
     results = tester.run(source)
@@ -23,6 +25,8 @@ class Job
 
     File.open("/tmp/#{@id}.json", 'w') { |file| file.write(results.to_json) }
 
+    source.update_status("Finished at " + Time.now.to_s)
+    
   end
 
 end

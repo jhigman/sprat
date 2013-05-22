@@ -92,7 +92,7 @@ class Tester
     json = make_call api, {:country => country}
     diseases = JSON.parse(json)
 
-    puts "result from api : " + diseases.inspect
+    # puts "result from api : " + diseases.inspect
 
     i = 0
     msgs = []
@@ -127,8 +127,6 @@ class Tester
 
     puts "Running tests"
     
-    source.update_status("Running")    
-
     results = []
     
     diseases = source.get_test_headers
@@ -139,8 +137,6 @@ class Tester
       index += 1
     end
 
-    source.update_status("Finished at " + Time.now.to_s)
-    
     return results
 
   end

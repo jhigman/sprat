@@ -14,8 +14,6 @@ class GDocTestRunner < Sinatra::Application
 
   config = YAML.load_file('config.yml')
 
-  puts "Loading settings.."
-
   set :username, config['username']
   set :password, config['password']
   set :apikey, config['apikey']

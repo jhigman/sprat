@@ -17,10 +17,13 @@ class GDriveTestSource
     return @session
   end
 
-  def update_status(msg)    
-    sheet = get_worksheet
-    set_config('status', msg)
-    sheet.save
+  def get_worksheet
+    # puts "Getting worksheet..."
+    if !@ws
+      doc = get_session.spreadsheet_by_title(@spreadsheet)
+      @ws = doc.worksheet_by_title(@worksheet)
+    end
+    return @ws
   end
 
   def get_test_headers
@@ -36,11 +39,10 @@ class GDriveTestSource
   end    
 
   def get_test_row(index)
-
     sheet = get_worksheet
     offset = get_config_row('tests')
     test_row = offset + index
-    
+   
     if test_row > sheet.num_rows
       return nil
     end
@@ -53,18 +55,6 @@ class GDriveTestSource
     end
     return ret
   end
-
-  def get_test_rows
-    headers = Array.new
-    sheet = get_worksheet
-    offset = get_config_row('tests')
-    i = 1
-    while i <= sheet.num_cols  do
-      headers << sheet[offset, i]
-       i +=1
-    end
-    return headers
-  end    
 
   def get_config(name)
     sheet = get_worksheet
@@ -102,6 +92,48 @@ class GDriveTestSource
       i +=1
     end
     return nil
+  end
+
+  def update_status(msg)    
+    sheet = get_worksheet
+    set_config('status', msg)
+    sheet.save
+  end
+
+  def reset_spreadsheet()
+
+    puts "Resetting spreadsheet..."
+
+    ws = get_worksheet
+
+    offset = get_config_row('tests')
+
+    offset += 1
+
+    while offset < ws.max_rows do
+      ws[offset, 2] = ""
+      ws[offset, 3] = ""
+      offset += 1
+    end
+    ws.save
+
+  end
+
+  def update_spreadsheet(test_results)
+
+    puts "Updating spreadsheet with " + test_results.length.to_s + " test results.." 
+
+    ws = get_worksheet
+
+    offset = get_config_row('tests')
+
+    # NB test IDs start from 1
+    test_results.each do |result|
+      ws[offset + result['id'].to_i, 2] = result['result']
+      ws[offset + result['id'].to_i, 3] = result['reason']
+    end
+    ws.save
+
   end
 
   # def get_local_csv_path
@@ -143,44 +175,6 @@ class GDriveTestSource
   #   return csv_path
 
   # end
-
-  def reset_spreadsheet()
-
-    puts "Resetting spreadsheet..."
-
-    ws = get_worksheet
-
-    offset = get_config_row('tests')
-
-    offset += 1
-
-    while offset < ws.max_rows do
-      ws[offset, 2] = ""
-      ws[offset, 3] = ""
-      offset += 1
-    end
-    ws.save
-
-  end
-
-  def update_spreadsheet(test_results)
-
-    puts "Updating spreadsheet..."
-
-    ws = get_worksheet
-
-    offset = get_config_row('tests')
-
-    offset += 1
-
-    test_results.each do |result|
-      puts "updating : " + result.inspect
-      ws[offset + result['id'].to_i, 2] = result['result']
-      ws[offset + result['id'].to_i, 3] = result['reason']
-    end
-    ws.save
-
-  end
 
   # def get_meta_from_csv(csv_contents)
 
@@ -232,14 +226,5 @@ class GDriveTestSource
 
   #   return tests
   # end
-
-  def get_worksheet
-    # puts "Getting worksheet..."
-    if !@ws
-      doc = get_session.spreadsheet_by_title(@spreadsheet)
-      @ws = doc.worksheet_by_title(@worksheet)
-    end
-    return @ws
-  end
 
 end
