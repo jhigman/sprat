@@ -1,0 +1,19 @@
+%h1= "Result #{@index}"
+
+- if @result
+  %p
+  %table
+    %thead
+      %th ID
+      %th Result
+      %th Reason
+    %tbody
+    - @result.each do |test_result|
+      %tr
+        %td= test_result['id']
+        %td= test_result['result']
+        %td= test_result['reason']
+ 
+
+%p
+  %a{title: "Run again", href: "/jobs"} Run Again

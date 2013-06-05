@@ -1,0 +1,12 @@
+%h1= "Jobs"
+
+%form{ :action => "", :method => "post"}
+  %fieldset
+    %ol
+      %li
+        %label{:for => "spreadsheet"} Spreadsheet Name:
+        %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
+      %li
+        %label{:for => "worksheet"} Worksheet Name:
+        %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
+    %input{:type => "submit", :value => "Send", :class => "button"}
