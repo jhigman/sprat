@@ -5,6 +5,7 @@ Drive tests from Google Docs
 
 *Not ready for use yet.*
 
+Requires redis running at least one test_jobs queue worker, e.g: `env QUEUE=test_jobs bundle exec rake resque:work`
 
 ## Authors
 

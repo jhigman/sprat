@@ -13,10 +13,13 @@ post '/jobs' do
   session[:spreadsheet] = spreadsheet
   session[:worksheet] = worksheet
 
-  job = Job.new(spreadsheet, worksheet, settings)
+  job_id = Time.now.to_i
+  if Resque.enqueue(Job, spreadsheet, worksheet)
+    session[:flash] = {:success => "Job #{job_id} queued successfully." }
+  else
+    session[:flash] = {:error => "Failed to queue job #{job_id}." }
+  end
 
-  job.exec 
-
-  redirect "/results/#{job.id}" 
+  redirect "/results"
 
 end
