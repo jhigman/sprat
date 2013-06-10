@@ -129,8 +129,6 @@ class Tester
     
     results = []
     
-    diseases = source.get_test_headers
-
     index = 1
     while (test = source.get_test_row(index))
       results << do_test(index, test, source)
