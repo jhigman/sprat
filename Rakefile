@@ -1,3 +1,5 @@
+require './app'
+require 'resque/tasks'
 require 'rake/testtask'
 # require 'yard'
 
@@ -32,3 +34,5 @@ end
 #   t.files   = ['app.rb', '**/helpers/*.rb', '**/routes/*.rb', '**/models/*.rb']
 #   t.options = ['--protected', '--private']
 # end
+
+

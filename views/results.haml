@@ -1,0 +1,24 @@
+%h1= "Results"
+%p Here are the results of the last 100 test jobs:
+
+- unless @flash.nil?
+  #flash
+    - @flash.each do |key, value|
+      %div{:class => "flash_#{key}"}= value
+
+- if @results
+  %p
+  %table
+    %thead
+      %th ID
+      %th
+    %tbody
+    - @results.each do |result|
+      %tr
+        %td= result
+        %td
+          %a{:title => "View the full details of this result", :href => "/results/#{result}" } view
+ 
+
+%p
+  %a{title: "Run a job", href: "/jobs"} Run a job

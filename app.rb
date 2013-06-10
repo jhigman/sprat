@@ -1,11 +1,13 @@
+require "rubygems"
 require 'sinatra'
 require "yaml"
 require 'haml'
-require "rubygems"
 require "google_drive"
 require "csv"
 require "json"
 require 'rest_client'
+require 'redis'
+require 'resque'
 
 class GDocTestRunner < Sinatra::Application
 
@@ -18,6 +20,8 @@ class GDocTestRunner < Sinatra::Application
   set :password, config['password']
   set :apikey, config['apikey']
   set :results, []
+
+  $redis = Redis.new(:host => config['redis_host'], :port => config['redis_port'])
 
 end
 
