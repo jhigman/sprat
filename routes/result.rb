@@ -2,7 +2,7 @@ def load_results(ids)
   if ids.empty?
     []
   else
-    $redis.mget(*ids.map { |id| "result-#{id}" })
+    settings.redis.mget(*ids.map { |id| "result-#{id}" })
   end
 end
 
@@ -13,7 +13,7 @@ get '/results' do
     session[:flash] = nil
   end
 
-  @results = $redis.sort "all-results", :order => "DESC", :limit => [0, 100]
+  @results = settings.redis.sort "all-results", :order => "DESC", :limit => [0, 100]
   haml :results
 end
 

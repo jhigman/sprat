@@ -20,7 +20,7 @@ class Job
 
     source.update_spreadsheet(results)
 
-    tr = TestResult.new(@id, results.to_json)
+    tr = TestResult.new(@id, results.to_json, @settings)
     tr.save
 
     source.update_status("Finished at " + Time.now.to_s)
