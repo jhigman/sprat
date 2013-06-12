@@ -1,0 +1,23 @@
+- if @job
+  %h2= "Job #{@job.id}"
+  %dl.dl-horizontal
+    %dt Spreadsheet
+    %dd= @job.spreadsheet
+    %dt Worksheet
+    %dd= "#{@job.worksheet}"
+    %dt Status
+    %dd= "#{@job.status}"
+    %dt Reason
+    %dd= "#{@job.reason}"
+- else
+  %h2= "New Job"
+  %form{ :action => "/jobs", :method => "post"}
+    %fieldset
+      %label{:for => "spreadsheet"} Spreadsheet Name
+      %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
+      %label{:for => "worksheet"} Worksheet Name
+      %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
+      %p
+        %input{:type => "submit", :value => "Submit", :class => "button"}
+
+

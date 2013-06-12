@@ -21,7 +21,7 @@ class GDocTestRunner < Sinatra::Application
   set :apikey, config['apikey']
   set :results, []
 
-  $redis = Redis.new(:host => config['redis_host'], :port => config['redis_port'])
+  set :redis, Redis.new(:host => config['redis_host'], :port => config['redis_port'], :db => config['redis_db'])
 
 end
 

@@ -1,15 +1,16 @@
-%h1= "Jobs"
+%h2= "Jobs"
 
-%form{ :action => "", :method => "post"}
-  %fieldset
-    %ol
-      %li
-        %label{:for => "spreadsheet"} Spreadsheet Name:
-        %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
-      %li
-        %label{:for => "worksheet"} Worksheet Name:
-        %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
-    %input{:type => "submit", :value => "Send", :class => "button"}
-
-%p
-  %a{title: "Results", href: "/results"} Results
+%table.table.table-bordered.table-hover
+  %thead
+    %th ID
+    %th Spreadsheet
+    %th Worksheet
+    %th Status
+  %tbody
+  - @jobs.each do |job|
+    %tr
+      %td= job.id
+      %td= job.spreadsheet
+      %td= job.worksheet
+      %td
+        %a{title: "#{job.status}", href: "/jobs/#{job.id}"} #{job.status}
