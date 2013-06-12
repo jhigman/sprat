@@ -61,7 +61,12 @@ class Job
 
     begin
       resultsArray = tester.run(source)
-      @status = "Finished"
+      if tester.failures > 0
+        @status = "Failed"
+        @reason = "#{tester.failures} failed tests"
+      else
+        @status = "Finished"
+      end        
     rescue => e  
       @reason = e.message
       @status = "Failed"

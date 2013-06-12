@@ -1,5 +1,7 @@
 class Tester
 
+  attr_accessor :failures 
+
   def initialize(app_settings = GDocTestRunner.settings)
     @settings = app_settings
   end
@@ -93,26 +95,35 @@ class Tester
 
     api = source.get_config('api')
 
-    json = make_call api, {:country => country}
-    diseases = JSON.parse(json)
-
-    # puts "result from api : " + diseases.inspect
-
-    i = 0
     msgs = []
-    while i <= test.length
-      current = headers[i]
-      val = test[i]
-      if is_true(val)
-        if !diseases.include? current
-          msgs << "#{current} not found"
+
+    begin
+    
+      json = make_call api, {:country => country}
+      diseases = JSON.parse(json)
+
+      # puts "result from api : " + diseases.inspect
+
+      i = 0
+      while i <= test.length
+        current = headers[i]
+        val = test[i]
+        if is_true(val)
+          if !diseases.include? current
+            msgs << "#{current} not found"
+          end
+        else
+          if diseases.include? current
+            msgs << "#{current} should not have been found"
+          end
         end
-      else
-        if diseases.include? current
-          msgs <<  "#{current} should not have been found"
-        end
+        i += 1
       end
-      i += 1
+    rescue RestClient::Exception => e
+      msgs << "#{e.message}"
+      msgs << "#{e.response.to_s}"
+    rescue => e
+      msgs << "#{e.message}"
     end
 
     ret['id'] = id
@@ -120,8 +131,9 @@ class Tester
       ret['result'] = 'PASS'
       ret['reason'] = ''
     else
+      @failures += 1
       ret['result'] = 'FAIL'
-      ret['reason'] = "#{country} : #{msgs.join(',')}"
+      ret['reason'] = "#{msgs.join(',')}"
     end
 
     return ret
@@ -129,10 +141,10 @@ class Tester
 
   def run(source)
 
-    puts "Running tests"
-    
+    @failures = 0
+
     results = []
-    
+
     index = 1
     while (test = source.get_test_row(index))
       results << do_test(index, test, source)
