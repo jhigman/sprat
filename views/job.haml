@@ -9,6 +9,19 @@
     %dd= "#{@job.status}"
     %dt Reason
     %dd= "#{@job.reason}"
+
+  %table.table.table-bordered.table-hover
+    %thead
+      %th Test ID
+      %th Result
+      %th Reason
+    %tbody
+      - JSON.parse("#{@job.results}").each do |result|
+        %tr
+          %td= result['id']
+          %td= result['result']
+          %td= result['reason']
+
 - else
   %h2= "New Job"
   %form{ :action => "/jobs", :method => "post"}
@@ -17,7 +30,11 @@
       %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
       %label{:for => "worksheet"} Worksheet Name
       %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
+      %label{:for => "local"} Only save results locally
+      %input{:type => "checkbox", :name => "local", :class => "checkbox", :checked => true}
       %p
-        %input{:type => "submit", :value => "Submit", :class => "button"}
+      %p
+        %input{:type => "submit", :name => "submit", :value => "Queue", :class => "button"}
+        %input{:type => "submit", :name => "submit", :value => "Run Now", :class => "button"}
 
 

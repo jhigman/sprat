@@ -25,19 +25,27 @@ post '/jobs' do
 
   spreadsheet = request["spreadsheet"]
   worksheet = request["worksheet"]
+  local = request["local"] ? 1 : 0
 
   session[:spreadsheet] = spreadsheet
   session[:worksheet] = worksheet
+  session[:local] = local
 
   job = Job.new
   job.spreadsheet = spreadsheet
   job.worksheet = worksheet
+  job.local = local
   job.save
 
-  if Resque.enqueue(Job, job.id)
-    redirect "/jobs"
+  if request["submit"] == "Queue"
+    if Resque.enqueue(Job, job.id)
+      redirect "/jobs"
+    else
+      error "Sorry, something went hideously wrong, and we failed to queue the job"
+    end
   else
-    error "Sorry, something went hideously wrong, and we failed to queue the job"
+    job.exec
+    redirect "/jobs/#{job.id}"
   end
 
 end
