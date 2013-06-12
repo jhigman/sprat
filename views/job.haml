@@ -1,0 +1,19 @@
+%h1= "Job #{@job.id}"
+
+- if @job
+  %ul
+  %li
+    %label Spreadsheet:
+    %text= "#{@job.spreadsheet}"
+  %li
+    %label Worksheet:
+    %text= "#{@job.worksheet}"
+  %li
+    %label Status:
+    %text= "#{@job.status}"
+  %li
+    %label Results:
+    %text= "#{@job.results}"
+ 
+%p
+  %a{title: "Jobs", href: "/jobs"} All Jobs

@@ -1,7 +1,16 @@
 get '/jobs' do
   @spreadsheet = session[:spreadsheet]
   @worksheet = session[:worksheet]
+  @jobs = Array.new
+  job_ids = settings.redis.lrange("jobs", -100, 100) 
+  job_ids.each {|n| @jobs << Job.load(n)}
   haml :jobs
+end
+
+get '/jobs/:id' do
+  id = params[:id]
+  @job = Job.load(id)
+  haml :job
 end
 
 post '/jobs' do
@@ -10,16 +19,19 @@ post '/jobs' do
 
   spreadsheet = request["spreadsheet"]
   worksheet = request["worksheet"]
+
   session[:spreadsheet] = spreadsheet
   session[:worksheet] = worksheet
 
-  job_id = Time.now.to_i
-  if Resque.enqueue(Job, spreadsheet, worksheet)
-    session[:flash] = {:success => "Job #{job_id} queued successfully." }
-  else
-    session[:flash] = {:error => "Failed to queue job #{job_id}." }
-  end
+  job = Job.new
+  job.spreadsheet = spreadsheet
+  job.worksheet = worksheet
+  job.save
 
-  redirect "/results"
+  if Resque.enqueue(Job, job.id)
+    redirect "/jobs/#{job.id}"
+  else
+    error "Sorry, something went hideously wrong, and we failed to queue the job"
+  end
 
 end
