@@ -35,15 +35,19 @@ class Job
     @id = get_id
     Job.var_names.each do |name|
       value = instance_variable_get("@#{name}")
-      @settings.redis.hset("jobs:#{@id}", name, value.to_s) #unless value == nil
+      @settings.redis.hset("jobs:#{@id}", name, value.to_s)
     end
+  end
+
+  def local?
+    return @local.to_s != "0" 
   end
 
   def exec()
 
     source = GDriveTestSource.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
 
-    unless local
+    unless local?
       source.update_status("Running")    
       source.reset_spreadsheet()
     end
@@ -68,7 +72,7 @@ class Job
         
     save
 
-    unless local
+    unless local?
       source.update_spreadsheet(resultsArray)
       source.update_status("Finished at " + Time.now.to_s)
     end
