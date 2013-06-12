@@ -1,3 +1,9 @@
+get '/jobs/new' do
+  @spreadsheet = session[:spreadsheet]
+  @worksheet = session[:worksheet]
+  haml :job
+end
+
 get '/jobs' do
   @spreadsheet = session[:spreadsheet]
   @worksheet = session[:worksheet]
@@ -29,7 +35,7 @@ post '/jobs' do
   job.save
 
   if Resque.enqueue(Job, job.id)
-    redirect "/jobs/#{job.id}"
+    redirect "/jobs"
   else
     error "Sorry, something went hideously wrong, and we failed to queue the job"
   end

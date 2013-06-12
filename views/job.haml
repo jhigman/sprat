@@ -1,19 +1,23 @@
-%h2= "Job #{@job.id}"
-
 - if @job
-  %ul
-  %li
-    %label Spreadsheet:
-    %text= "#{@job.spreadsheet}"
-  %li
-    %label Worksheet:
-    %text= "#{@job.worksheet}"
-  %li
-    %label Status:
-    %text= "#{@job.status}"
-  %li
-    %label Results:
-    %text= "#{@job.results}"
- 
-%p
-  %a{title: "Jobs", href: "/jobs"} All Jobs
+  %h2= "Job #{@job.id}"
+  %dl.dl-horizontal
+    %dt Spreadsheet
+    %dd= @job.spreadsheet
+    %dt Worksheet
+    %dd= "#{@job.worksheet}"
+    %dt Status
+    %dd= "#{@job.status}"
+    %dt Results
+    %dd= "#{@job.results}"
+- else
+  %h2= "New Job"
+  %form{ :action => "/jobs", :method => "post"}
+    %fieldset
+      %label{:for => "spreadsheet"} Spreadsheet Name
+      %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
+      %label{:for => "worksheet"} Worksheet Name
+      %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
+      %p
+        %input{:type => "submit", :value => "Submit", :class => "button"}
+
+
