@@ -1,4 +1,4 @@
-%h1= "Jobs"
+%h2= "Jobs"
 
 %form{ :action => "", :method => "post"}
   %fieldset
@@ -11,7 +11,7 @@
         %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
     %input{:type => "submit", :value => "Send", :class => "button"}
 
-%table
+%table.table.table-bordered.table-hover
   %thead
     %th ID
     %th Spreadsheet
