@@ -7,8 +7,8 @@
     %dd= "#{@job.worksheet}"
     %dt Status
     %dd= "#{@job.status}"
-    %dt Results
-    %dd= "#{@job.results}"
+    %dt Reason
+    %dd= "#{@job.reason}"
 - else
   %h2= "New Job"
   %form{ :action => "/jobs", :method => "post"}
