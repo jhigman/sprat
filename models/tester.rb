@@ -1,11 +1,15 @@
 class Tester
 
-  # def initialize(source)
-  #   @source = source
-  # end
+  def initialize(app_settings = GDocTestRunner.settings)
+    @settings = app_settings
+  end
 
   def make_call(uri, params)
-    response = RestClient.get uri, {:params => params}
+    unless @settings.apikey.nil?
+      params = {:apikey => @settings.apikey}.merge(params)
+    end
+
+    response = RestClient.get uri, {:params => params, :content_type => :json, :accept => :json}
     return response.to_str
   end
 

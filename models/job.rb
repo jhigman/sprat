@@ -15,7 +15,7 @@ class Job
     source.update_status("Running")    
     source.reset_spreadsheet()
 
-    tester = Tester.new
+    tester = Tester.new(@settings)
     results = tester.run(source)
 
     source.update_spreadsheet(results)
