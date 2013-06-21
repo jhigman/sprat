@@ -1,2 +1,3 @@
 config.yml
 .rbenv-gemsets
+config/deploy.rb

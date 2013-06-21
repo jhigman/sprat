@@ -1,0 +1,47 @@
+set :application, "gdoc-test-runner"
+set :repository,  "https://github.com/jhigman/gdoc-test-runner.git"
+set :scm, "git"
+
+# Do not use sudo
+# Comment the following two lines if you do use sudo
+set :use_sudo, false
+set(:run_method) { use_sudo ? :sudo : :run }
+
+# Handle sudo password prompt correctly:
+default_run_options[:pty] = true
+
+set :user, 'testrun' # username on remote host
+set :group, 'www' # group on remote host
+set :runner, :user
+
+set :host, "#{user}@example.com"
+role :web, host
+role :app, host
+role :resque_worker, host
+set :workers, { "test_jobs" => 2 }
+
+set :rack_env, :production
+
+# Where to deploy the app
+set :deploy_to, "/home/#{user}"
+set :unicorn_conf, "#{deploy_to}/current/config/unicorn.rb"
+set :unicorn_pid, "#{deploy_to}/shared/pids/unicorn.pid"
+
+set :public_children, ["bootstrap","css"]
+
+# Unicorn control tasks
+namespace :deploy do
+  task :restart do
+    run "if [ -f #{unicorn_pid} ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{current_path} && bundle exec unicorn -c #{unicorn_conf} -E #{rack_env} -D; fi"
+  end
+ 
+  task :start do
+    run "cd #{current_path} && bundle exec unicorn -c #{unicorn_conf} -E #{rack_env} -D"
+  end
+ 
+  task :stop do
+    run "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
+  end
+end
+
+after "deploy:restart", "resque:restart"
