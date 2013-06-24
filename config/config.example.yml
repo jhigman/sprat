@@ -1,0 +1,7 @@
+#  set username, password
+username: user@example.com
+password: your.password
+apikey: your.apikey
+redis_host: localhost
+redis_port: 6379
+redis_db: 1

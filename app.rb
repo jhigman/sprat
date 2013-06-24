@@ -14,7 +14,7 @@ class GDocTestRunner < Sinatra::Application
   enable :sessions
   set :session_secret, 'my sooper secret'
 
-  config = YAML.load_file('config.yml')
+  config = YAML.load_file(File.join('config', 'config.yml'))
 
   set :username, config['username']
   set :password, config['password']
