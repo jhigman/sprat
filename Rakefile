@@ -35,4 +35,3 @@ end
 #   t.options = ['--protected', '--private']
 # end
 
-Resque.logger = Logger.new(File.join(File.dirname(__FILE__), "log", "resque.log"))
