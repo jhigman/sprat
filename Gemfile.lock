@@ -93,7 +93,7 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano
-  capistrano-resque
+  capistrano-resque (~> 0.1.0)
   google_drive
   haml
   json
