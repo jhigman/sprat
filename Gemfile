@@ -4,6 +4,7 @@ gem 'sinatra', :github => "sinatra/sinatra"
 
 # other dependencies
 gem 'rake'
+gem 'rack-test'
 gem 'json'
 gem 'haml'
 gem 'shotgun'

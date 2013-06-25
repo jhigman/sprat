@@ -12,7 +12,7 @@ class AppTest < Test::Unit::TestCase
 
   def test_with_params
     get '/', :name => 'Frank'
-    assert_includes last_response.body, '<h1>Google Docs Test Runner</h1>' 
+    assert_includes last_response.body, 'Google Drive Test Runner' 
   end
 
 end

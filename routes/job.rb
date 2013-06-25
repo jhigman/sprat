@@ -9,13 +9,13 @@ get '/jobs' do
   @worksheet = session[:worksheet]
   @jobs = Array.new
   job_ids = settings.redis.lrange("jobs", 0, 20) 
-  job_ids.each {|n| @jobs << Job.load(n)}
+  job_ids.each {|n| @jobs << GoogleDriveTestRunner::Job.load(n)}
   haml :jobs
 end
 
 get '/jobs/:id' do
   id = params[:id]
-  @job = Job.load(id)
+  @job = GoogleDriveTestRunner::Job.load(id)
   haml :job
 end
 
@@ -29,14 +29,14 @@ post '/jobs' do
   session[:worksheet] = worksheet
   session[:local] = local
 
-  job = Job.new
+  job = GoogleDriveTestRunner::Job.new
   job.spreadsheet = spreadsheet
   job.worksheet = worksheet
   job.local = local
   job.save
 
   if request["submit"] == "Queue"
-    if Resque.enqueue(Job, job.id)
+    if Resque.enqueue(GoogleDriveTestRunner::Job, job.id)
       redirect "/jobs"
     else
       error "Sorry, something went hideously wrong, and we failed to queue the job"
