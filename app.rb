@@ -5,6 +5,7 @@ require 'haml'
 require "google_drive"
 require "csv"
 require "json"
+require "jsonpath"
 require 'rest_client'
 require 'redis'
 require 'resque'

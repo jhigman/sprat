@@ -31,6 +31,8 @@ GEM
     highline (1.6.19)
     httpauth (0.2.0)
     json (1.8.0)
+    jsonpath (0.5.2)
+      multi_json
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
@@ -99,6 +101,7 @@ DEPENDENCIES
   google_drive
   haml
   json
+  jsonpath
   rack-test
   rake
   resque (= 1.23.0)

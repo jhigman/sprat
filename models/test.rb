@@ -19,24 +19,17 @@ module GoogleDriveTestRunner
       return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
     end
 
-    def check_expectations_array(responses, msgs)
-      @outputs.each do |key, expected|
-        if is_true(expected)
-          if !responses.include? key
-            msgs << "#{key} not found"
-          end
-        else
-          if responses.include? key
-            msgs << "#{key} should not have been found"
-          end
-        end
-      end
+    def get_response_values(response, jsonpath)
+      path = JsonPath.new(jsonpath)
+      path.on(response)
     end
 
-    def check_expectations_hash(responses, msgs)
+    def check_expectations_jsonpath(response, msgs)
       @outputs.each do |key, expected|
-        if expected
-          actual = responses[key]
+        # ignore entries with no expectation
+        if expected.to_s != ""
+          # making assumption that result we want is the first one matched..?
+          actual = get_response_values(response, key).first
           if actual.to_s != expected.to_s
             msgs << "Expected #{expected.to_s} for #{key.to_s}, but found #{actual.to_s}"
           end
@@ -44,13 +37,46 @@ module GoogleDriveTestRunner
       end
     end
 
-    def check_expectations(responses, msgs)
-      puts "response type is : " + responses.class.name
-      case responses.class.name
+    def check_expectations_array(response, msgs)
+      # want to ignore case, so downcase everything
+      downcased = response.map(&:downcase)
+      @outputs.each do |key, expected|
+        if is_true(expected)
+          if !downcased.include? key
+            msgs << "#{key} not found"
+          end
+        else
+          if downcased.include? key
+            msgs << "#{key} should not have been found"
+          end
+        end
+      end
+    end
+
+    def get_response_type(response)
+      case response.class.name
         when 'Array'
-          check_expectations_array(responses, msgs)
+          response.each do |r|
+            if !['String', 'Fixnum', 'Float'].include? r.class.name
+              return 'Hash'
+            end
+          end
+          return 'Array'
         when 'Hash'
-          check_expectations_hash(responses, msgs)
+          return 'Hash'
+        end
+    end
+
+    def check_expectations(response, msgs)
+      begin
+        case get_response_type(response)
+          when 'Array'
+            check_expectations_array(response, msgs)
+          else
+            check_expectations_jsonpath(response, msgs)
+        end
+      rescue
+        msgs << "hm, something went wrong while checking the expectations.."
       end
     end
 
@@ -75,7 +101,11 @@ module GoogleDriveTestRunner
         params = get_params
         json = api.make_call(params)
         response = JSON.parse(json)
-        check_expectations(response, msgs)
+        if response.empty?
+          msgs << "Response from api was empty"
+        else
+          check_expectations(response, msgs)
+        end
       rescue RestClient::Exception => e
         msgs << "#{e.message}"
         msgs << "#{e.response.to_s}"
