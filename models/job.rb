@@ -8,6 +8,7 @@ class Job
   def initialize(app_settings = GDocTestRunner.settings)
     @settings = app_settings
     @status = "Pending"
+    @results = []
   end
 
   def self.var_names
@@ -45,7 +46,7 @@ class Job
 
   def exec()
 
-    source = GDriveTestSource.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
+    source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
 
     unless local?
       source.update_status("Running")    
@@ -60,15 +61,16 @@ class Job
     resultsArray = []
 
     begin
-      resultsArray = tester.run(source)
-      if tester.failures > 0
-        @status = "Failed"
-        @reason = "#{tester.failures} failed tests"
-      else
+      success = tester.run(source)
+      resultsArray = tester.get_results
+      if success
         @status = "Finished"
+      else
+        @status = "Failed"
+        @reason = "Tests did not pass"
       end        
     rescue => e  
-      @reason = e.message
+      @reason = e.message + e.backtrace.inspect
       @status = "Failed"
     ensure
       # always set empty results

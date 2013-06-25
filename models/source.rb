@@ -1,4 +1,6 @@
-class GDriveTestSource
+class Source
+
+  SKIP_COLUMNS = 3
 
   def initialize(spreadsheet, worksheet, username, password)
     @spreadsheet = spreadsheet
@@ -26,14 +28,59 @@ class GDriveTestSource
     return @ws
   end
 
+  def get_api
+    api_url = get_config('api')
+    api_key = get_config('apikey')
+    api = API.new(api_url, api_key)
+  end
+
+  def get_parameter_names
+    names = get_config('parameters').split(',').map(&:strip).map(&:downcase)
+  end
+  
+  def get_inputs(row, headers)
+    param_names = get_parameter_names
+    inputs = Hash.new
+    headers.each_with_index do |header, index|
+      if param_names.include? header
+        inputs[header] = row[SKIP_COLUMNS+index]
+      end
+    end
+    return inputs
+  end
+
+  def get_outputs(row, headers)
+    param_names = get_parameter_names
+    outputs = Hash.new
+    headers.each_with_index do |header, index|
+      if !param_names.include? header
+        outputs[header] = row[SKIP_COLUMNS+index]
+      end
+    end
+    return outputs
+  end
+
+  def get_tests
+    tests = []
+    headers = get_test_headers
+    index = 1
+    while (row = get_test_row(index))
+      inputs = get_inputs(row, headers)
+      outputs = get_outputs(row, headers)
+      tests << Test.new(index, inputs, outputs)
+      index += 1
+    end
+    return tests
+  end
+
   def get_test_headers
     headers = Array.new
     sheet = get_worksheet
     offset = get_config_row('tests')
-    i = 5
+    i = SKIP_COLUMNS + 1
     while i <= sheet.num_cols  do
-      headers << sheet[offset, i]
-       i +=1
+      headers << sheet[offset, i].downcase
+      i +=1
     end
     return headers
   end    
