@@ -1,94 +1,96 @@
-class Job
+module GoogleDriveTestRunner
+  class Job
 
-  @queue = :test_jobs
-  
-  attr_accessor :id, :spreadsheet, :worksheet, :local, :status, :reason, :results
-  attr_accessor :settings 
+    @queue = :test_jobs
+    
+    attr_accessor :id, :spreadsheet, :worksheet, :local, :status, :reason, :results
+    attr_accessor :settings 
 
-  def initialize(app_settings = GDocTestRunner.settings)
-    @settings = app_settings
-    @status = "Pending"
-    @results = []
-  end
-
-  def self.var_names
-    ['spreadsheet', 'worksheet', 'local', 'status', 'reason', 'results']
-  end
-  
-  def self.load(id)
-    job = new
-    job.id = id
-    Job.var_names.each do |name|
-      job.instance_variable_set("@#{name}", job.settings.redis.hget("jobs:#{job.id}", name))
-    end
-    job
-  end
-
-  def get_id
-    if @id == nil
-      @id = @settings.redis.incr("jobs.next.id")
-      @settings.redis.lpush("jobs", @id)
-    end
-    @id
-  end
-
-  def save
-    @id = get_id
-    Job.var_names.each do |name|
-      value = instance_variable_get("@#{name}")
-      @settings.redis.hset("jobs:#{@id}", name, value.to_s)
-    end
-  end
-
-  def local?
-    return @local.to_s != "0" 
-  end
-
-  def exec()
-
-    source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
-
-    unless local?
-      source.update_status("Running")    
-      source.reset_spreadsheet()
+    def initialize(app_settings = GDocTestRunner.settings)
+      @settings = app_settings
+      @status = "Pending"
+      @results = []
     end
 
-    @status = "Running"
-    save
+    def self.var_names
+      ['spreadsheet', 'worksheet', 'local', 'status', 'reason', 'results']
+    end
+    
+    def self.load(id)
+      job = new
+      job.id = id
+      Job.var_names.each do |name|
+        job.instance_variable_set("@#{name}", job.settings.redis.hget("jobs:#{job.id}", name))
+      end
+      job
+    end
 
-    tester = Tester.new(@settings)
+    def get_id
+      if @id == nil
+        @id = @settings.redis.incr("jobs.next.id")
+        @settings.redis.lpush("jobs", @id)
+      end
+      @id
+    end
 
-    resultsArray = []
+    def save
+      @id = get_id
+      Job.var_names.each do |name|
+        value = instance_variable_get("@#{name}")
+        @settings.redis.hset("jobs:#{@id}", name, value.to_s)
+      end
+    end
 
-    begin
-      success = tester.run(source)
-      resultsArray = tester.get_results
-      if success
-        @status = "Finished"
-      else
+    def local?
+      return @local.to_s != "0" 
+    end
+
+    def exec()
+
+      source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
+
+      unless local?
+        source.update_status("Running")    
+        source.reset_spreadsheet()
+      end
+
+      @status = "Running"
+      save
+
+      tester = Tester.new(@settings)
+
+      resultsArray = []
+
+      begin
+        success = tester.run(source)
+        resultsArray = tester.get_results
+        if success
+          @status = "Finished"
+        else
+          @status = "Failed"
+          @reason = "Tests did not pass"
+        end        
+      rescue => e  
+        @reason = e.message + e.backtrace.inspect
         @status = "Failed"
-        @reason = "Tests did not pass"
-      end        
-    rescue => e  
-      @reason = e.message + e.backtrace.inspect
-      @status = "Failed"
-    ensure
-      # always set empty results
-      @results = JSON.generate(resultsArray)
-    end
-        
-    save
+      ensure
+        # always set empty results
+        @results = JSON.generate(resultsArray)
+      end
+          
+      save
 
-    unless local?
-      source.update_spreadsheet(resultsArray)
-      source.update_status("Finished at " + Time.now.to_s)
+      unless local?
+        source.update_spreadsheet(resultsArray)
+        source.update_status("Finished at " + Time.now.to_s)
+      end
+
+    end
+
+    def self.perform(id)
+      job = Job.load(id)
+      job.exec
     end
 
   end
-
-  def self.perform(id)
-    job = Job.load(id)
-    job.exec
-  end
-
 end
