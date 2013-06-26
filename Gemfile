@@ -6,6 +6,7 @@ gem 'sinatra', :github => "sinatra/sinatra"
 gem 'rake'
 gem 'rack-test'
 gem 'json'
+gem 'nokogiri', '1.5.9'
 gem 'jsonpath'
 gem 'haml'
 gem 'shotgun'
