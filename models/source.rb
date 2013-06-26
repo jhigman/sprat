@@ -142,9 +142,9 @@ module GoogleDriveTestRunner
       return nil
     end
 
-    def update_status(msg)    
+    def update_status(msg, item = 'status')    
       sheet = get_worksheet
-      set_config('status', msg)
+      set_config(item, msg)
       sheet.save
     end
 

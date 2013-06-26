@@ -35,13 +35,44 @@ class TestTest < Test::Unit::TestCase
 
   end
 
-  def test_get_response_values
+  def test_get_response_values_simple_array
+    test = GoogleDriveTestRunner::Test.new(1,[],[])
+
+    # simple array
+    response = [ 'one', 'two' ]
+
+    jsonpath = '$.[0]'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal ['one'], result
+
+    jsonpath = '$.[1]'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal ['two'], result
+
+  end
+
+  def test_get_response_values_simple_hash
+    test = GoogleDriveTestRunner::Test.new(1,[],[])
+
+    # simple hash
+    response = { 'first' => 'one', 'second' => 'two' }
+
+    jsonpath = '$.first'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal ['one'], result
+
+    jsonpath = '$.second'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal ['two'], result
+
+  end
+
+  def test_get_response_values_with_root
     test = GoogleDriveTestRunner::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
     item2 = {'name' => 'two'}
 
-    # root element has name
     response = { 'root' => [item1, item2]}
 
     jsonpath = '$.root[0].name'
@@ -56,36 +87,40 @@ class TestTest < Test::Unit::TestCase
     result = test.get_response_values(response, jsonpath)
     assert_equal ['one','two'], result
 
-    # root element not named
+  end
+
+  def test_get_response_values_without_root
+    test = GoogleDriveTestRunner::Test.new(1,[],[])
+
+    item1 = {'name' => 'one'}
+    item2 = {'name' => 'two'}
+
     response = [item1, item2]
 
     jsonpath = '$.[0].name'
     result = test.get_response_values(response, jsonpath)
     assert_equal ['one'], result
 
-    # simple hash
-    response = { 'first' => 'one', 'second' => 'two' }
-
-    jsonpath = '$.first'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
-
-    jsonpath = '$.second'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
-
-    # simple array
-    response = [ 'one', 'two' ]
-
-    jsonpath = '$.[0]'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
-
-    jsonpath = '$.[1]'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
-
   end
+
+
+  #
+  # SEEMS LIKE A BUG IN JSONPath?
+  #
+  
+  # def test_get_response_values_when_path_not_found
+  #   test = GoogleDriveTestRunner::Test.new(1,[],[])
+
+  #   item1 = {'name' => 'one'}
+  #   item2 = {'name' => 'two'}
+
+  #   response = [item1, item2]
+
+  #   jsonpath = '$.[99].name'
+  #   result = test.get_response_values(response, jsonpath)
+  #   assert_equal [], result
+
+  # end
 
   def test_check_expectations_jsonpath
 

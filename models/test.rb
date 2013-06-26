@@ -19,20 +19,30 @@ module GoogleDriveTestRunner
       return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
     end
 
-    def get_response_values(response, jsonpath)
-      path = JsonPath.new(jsonpath)
-      path.on(response)
+    def is_equal(val1, val2)
+      val1.to_s == val2.to_s
     end
 
+    def get_response_value(response, jsonpath)
+      JsonPath.new(jsonpath).first(response)
+    end
+
+    def get_response_values(response, jsonpath)
+      JsonPath.new(jsonpath).on(response)
+    end
+
+    def failed_expectation_message(key, expected, actual)
+      if expected.to_s == ""
+        expected = "no value"
+      end
+      "Expected #{expected.to_s} for #{key.to_s}, but found #{actual.to_s}"
+    end
+    
     def check_expectations_jsonpath(response, msgs)
       @outputs.each do |key, expected|
-        # ignore entries with no expectation
-        if expected.to_s != ""
-          # making assumption that result we want is the first one matched..?
-          actual = get_response_values(response, key).first
-          if actual.to_s != expected.to_s
-            msgs << "Expected #{expected.to_s} for #{key.to_s}, but found #{actual.to_s}"
-          end
+        actual = get_response_value(response, key)
+        if !is_equal(expected, actual)
+          msgs << failed_expectation_message(key, expected, actual)
         end
       end
     end
@@ -75,8 +85,9 @@ module GoogleDriveTestRunner
           else
             check_expectations_jsonpath(response, msgs)
         end
-      rescue
-        msgs << "hm, something went wrong while checking the expectations.."
+      rescue => e
+        msgs << "hm, something went wrong while checking the expectations "
+        msgs << "(#{e.message})"
       end
     end
 

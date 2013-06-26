@@ -50,7 +50,9 @@ module GoogleDriveTestRunner
       source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
 
       unless local?
-        source.update_status("Running")    
+        source.update_status("Running", "Status")
+        source.update_status(Time.now.to_s, "Started At")    
+        source.update_status("", "Finished At")    
         source.reset_spreadsheet()
       end
 
@@ -65,14 +67,14 @@ module GoogleDriveTestRunner
         success = tester.run(source)
         resultsArray = tester.get_results
         if success
-          @status = "Finished"
+          @status = "PASS"
         else
-          @status = "Failed"
+          @status = "FAIL"
           @reason = "Tests did not pass"
         end        
       rescue => e  
         @reason = e.message + e.backtrace.inspect
-        @status = "Failed"
+        @status = "FAIL"
       ensure
         # always set empty results
         @results = JSON.generate(resultsArray)
@@ -82,7 +84,8 @@ module GoogleDriveTestRunner
 
       unless local?
         source.update_spreadsheet(resultsArray)
-        source.update_status("Finished at " + Time.now.to_s)
+        source.update_status(@status, "Status")
+        source.update_status(Time.now.to_s, "Finished At")
       end
 
     end
