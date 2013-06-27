@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/jhigman/jsonpath.git
+  revision: 406691c872d28f594ff52e5e7dc66318e6911af5
+  specs:
+    jsonpath (0.5.2)
+      multi_json
+
+GIT
   remote: git://github.com/sinatra/sinatra.git
   revision: 96c755ed279d385f4a84d100a8c6a1ae6645dd7d
   specs:
@@ -31,8 +38,6 @@ GEM
     highline (1.6.19)
     httpauth (0.2.0)
     json (1.8.0)
-    jsonpath (0.5.2)
-      multi_json
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
@@ -99,7 +104,7 @@ DEPENDENCIES
   google_drive
   haml
   json
-  jsonpath
+  jsonpath!
   nokogiri (= 1.5.9)
   rack-test
   rake
