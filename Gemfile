@@ -12,9 +12,10 @@ gem 'haml'
 gem 'shotgun'
 gem 'google_drive'
 gem 'rest-client'
-gem 'resque', '1.23.0'
+gem 'resque'
 gem 'unicorn'
 gem 'capistrano'
+gem 'capistrano-resque', :github => "StaringSkyward/capistrano-resque"
 
 # these are needed too?
 # gem 'rubygems'
