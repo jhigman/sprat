@@ -15,7 +15,6 @@ gem 'rest-client'
 gem 'resque'
 gem 'unicorn'
 gem 'capistrano'
-gem 'capistrano-resque', :github => "StaringSkyward/capistrano-resque"
 
 # these are needed too?
 # gem 'rubygems'
