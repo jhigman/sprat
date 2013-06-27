@@ -1,5 +1,6 @@
 set :application, "gdoc-test-runner"
 set :repository,  "https://github.com/jhigman/gdoc-test-runner.git"
+set :branch, "master"
 set :scm, "git"
 
 # Do not use sudo
@@ -7,25 +8,30 @@ set :scm, "git"
 set :use_sudo, false
 set(:run_method) { use_sudo ? :sudo : :run }
 
-# Handle sudo password prompt correctly:
+ssh_options[:forward_agent] = true
+ssh_options[:username] = 'testrun'
 default_run_options[:pty] = true
+set :use_sudo, false
 
 set :user, 'testrun' # username on remote host
 set :group, 'www' # group on remote host
 set :runner, :user
 
 set :host, "#{user}@example.com"
+set(:deploy_to) { "/home/#{user}" }
+set :default_environment, {
+  'PATH' => "/.rbenv/shims:/home/testrun/.rbenv/bin:$PATH"
+}
+set :bundle_flags, "--deployment --quiet --binstubs --shebang ruby-local-exec"
+
 role :web, host
 role :app, host
-role :resque_worker, host
-set :workers, { "test_jobs" => 2 }
-
 set :rack_env, :production
 
 # Where to deploy the app
-set :deploy_to, "/home/#{user}"
-set :unicorn_conf, "#{deploy_to}/current/config/unicorn.rb"
-set :unicorn_pid, "#{deploy_to}/shared/pids/unicorn.pid"
+set :current_path, "/home/testrun/current"
+set :unicorn_conf, "/home/testrun/current/config/unicorn.rb"
+set :unicorn_pid, "/home/testrun/shared/pids/unicorn.pid"
 
 set :public_children, ["bootstrap","css"]
 
@@ -48,4 +54,6 @@ namespace :deploy do
   end
 end
 
-after "deploy:restart", "resque:restart"
+after "deploy:restart", :roles => [:app] do
+  run "/home/testrun/bin/restart_resque_workers.sh"
+end

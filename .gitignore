@@ -1,3 +1,4 @@
 .rbenv-gemsets
+.rbenv-version
 config/deploy.rb
 config/config.yml
