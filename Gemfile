@@ -15,7 +15,6 @@ gem 'rest-client'
 gem 'resque', '1.23.0'
 gem 'unicorn'
 gem 'capistrano'
-gem 'capistrano-resque', "~> 0.1.0"
 
 # these are needed too?
 # gem 'rubygems'
