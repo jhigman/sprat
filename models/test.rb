@@ -32,9 +32,8 @@ module GoogleDriveTestRunner
     end
 
     def failed_expectation_message(key, expected, actual)
-      if expected.to_s == ""
-        expected = "no value"
-      end
+      expected = "nothing" if expected.to_s == ""
+      actual = "nothing" if actual.to_s == ""
       "Expected #{expected.to_s} for '#{key.to_s}', but found #{actual.to_s}"
     end
     
@@ -95,15 +94,19 @@ module GoogleDriveTestRunner
       end
     end
 
-    def make_result(msgs)
+    def make_result(msgs, params, json)
       ret = Hash.new
       ret['id'] = @id
       if msgs.length == 0
         ret['result'] = 'PASS'
         ret['reason'] = ''
+        ret['params'] = params
+        ret['response'] = json
       else
         ret['result'] = 'FAIL'
-        ret['reason'] = "#{msgs.join(',')}"
+        ret['reason'] = "#{msgs.join('.')}"
+        ret['params'] = params
+        ret['response'] = json
       end
       return ret
     end
@@ -128,7 +131,7 @@ module GoogleDriveTestRunner
         msgs << "#{e.message}"
       end
 
-      return make_result(msgs)
+      return make_result(msgs, params, json)
 
     end
 

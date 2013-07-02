@@ -7,10 +7,10 @@ class TestTest < Test::Unit::TestCase
   def test_make_result
     test = GoogleDriveTestRunner::Test.new(1,[],[])
 
-    result = test.make_result([])
+    result = test.make_result([], {}, '')
     assert_equal 'PASS', result['result'] 
 
-    result = test.make_result(['message one', 'message two'])
+    result = test.make_result(['message one', 'message two'], {}, '')
     assert_equal 'FAIL', result['result'] 
   end
 
@@ -124,7 +124,10 @@ class TestTest < Test::Unit::TestCase
 
   def test_check_expectations_jsonpath
 
-    outputs = { '$.root[0].name' => 'one', '$.root[1].name' => 'two', }
+    outputs = [
+      { 'path' => '$.root[0].name', 'value' => 'one', 'label' => 'Name1'},
+      { 'path' => '$.root[1].name', 'value' => 'two', 'label' => 'Name2'}
+    ]
 
     test = GoogleDriveTestRunner::Test.new(1,[],outputs)
 

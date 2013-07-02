@@ -15,12 +15,16 @@
       %th Test ID
       %th Result
       %th Reason
+      %th Parameters
+      %th Response
     %tbody
       - JSON.parse("#{@job.results}").each do |result|
         %tr
           %td= result['id']
           %td= result['result']
           %td= result['reason']
+          %td= result['params']
+          %td= result['response']
 
 - else
   %h2= "New Job"
