@@ -55,7 +55,11 @@ module GoogleDriveTestRunner
       outputs = Hash.new
       headers.each_with_index do |header, index|
         if !param_names.include? header
-          outputs[header] = row[SKIP_COLUMNS+index]
+          if get_config(header)
+            outputs[get_config(header)] = row[SKIP_COLUMNS+index]
+          else
+            outputs[header] = row[SKIP_COLUMNS+index]
+          end
         end
       end
       return outputs
@@ -106,8 +110,9 @@ module GoogleDriveTestRunner
 
     def get_config(name)
       sheet = get_worksheet
+      tests_start_row = get_config_row('tests')
       i = 1
-      while i <= sheet.num_rows  do
+      while i <= tests_start_row  do
         label = sheet[i,1] 
         if label.downcase == name.downcase
           return sheet[i,2]
