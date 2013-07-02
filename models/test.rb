@@ -35,14 +35,16 @@ module GoogleDriveTestRunner
       if expected.to_s == ""
         expected = "no value"
       end
-      "Expected #{expected.to_s} for #{key.to_s}, but found #{actual.to_s}"
+      "Expected #{expected.to_s} for '#{key.to_s}', but found #{actual.to_s}"
     end
     
     def check_expectations_jsonpath(response, msgs)
-      @outputs.each do |key, expected|
+      @outputs.each do |output|
+        key = output['path']
+        expected = output['value']
         actual = get_response_value(response, key)
         if !is_equal(expected, actual)
-          msgs << failed_expectation_message(key, expected, actual)
+          msgs << failed_expectation_message(output['label'], expected, actual)
         end
       end
     end
@@ -50,7 +52,9 @@ module GoogleDriveTestRunner
     def check_expectations_array(response, msgs)
       # want to ignore case, so downcase everything
       downcased = response.map(&:downcase)
-      @outputs.each do |key, expected|
+      @outputs.each do |output|
+        key = output['path']
+        expected = output['value']
         if is_true(expected)
           if !downcased.include? key
             msgs << "#{key} not found"

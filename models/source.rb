@@ -52,14 +52,13 @@ module GoogleDriveTestRunner
 
     def get_outputs(row, headers)
       param_names = get_parameter_names
-      outputs = Hash.new
+      outputs = []
       headers.each_with_index do |header, index|
         if !param_names.include? header
-          if get_config(header)
-            outputs[get_config(header)] = row[SKIP_COLUMNS+index]
-          else
-            outputs[header] = row[SKIP_COLUMNS+index]
-          end
+          label = header
+          value = row[SKIP_COLUMNS+index]
+          path = get_config(header) || header
+          outputs << { 'label' => label, 'path' => path, 'value' => value }
         end
       end
       return outputs
