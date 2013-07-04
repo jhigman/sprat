@@ -2,3 +2,4 @@
 .rbenv-version
 config/deploy.rb
 config/config.yml
+.bundle

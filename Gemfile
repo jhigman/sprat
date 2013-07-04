@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'sinatra', :github => "sinatra/sinatra"
+gem 'sinatra'
 
 # other dependencies
 gem 'rake'
@@ -9,13 +9,20 @@ gem 'json'
 gem 'nokogiri', '1.5.9'
 gem 'jsonpath', :github => "jhigman/jsonpath"
 gem 'haml'
-gem 'shotgun'
 gem 'google_drive'
 gem 'rest-client'
 gem 'resque'
-gem 'unicorn'
 gem 'capistrano'
 
 # these are needed too?
 # gem 'rubygems'
 # gem 'csv'
+
+group :development do
+  gem 'shotgun'
+  gem 'thin'
+end
+
+group :production do
+  gem 'unicorn'
+end
