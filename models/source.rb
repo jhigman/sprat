@@ -36,7 +36,13 @@ module GoogleDriveTestRunner
     end
 
     def get_parameter_names
-      names = get_config('parameters').split(',').map(&:strip).map(&:downcase)
+      params = get_config('parameters') || ""
+      return params.split(',').map(&:strip).map(&:downcase)
+    end
+
+    def get_ignore_names
+      ignore = get_config('ignore') || ""
+      return ignore.split(',').map(&:strip).map(&:downcase)
     end
     
     def get_inputs(row, headers)
@@ -51,10 +57,10 @@ module GoogleDriveTestRunner
     end
 
     def get_outputs(row, headers)
-      param_names = get_parameter_names
+      ignore_names = get_ignore_names + get_parameter_names
       outputs = []
       headers.each_with_index do |header, index|
-        if !param_names.include? header
+        if !ignore_names.include? header
           label = header
           value = row[SKIP_COLUMNS+index]
           path = get_config(header) || header
