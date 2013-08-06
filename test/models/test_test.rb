@@ -103,24 +103,31 @@ class TestTest < Test::Unit::TestCase
 
   end
 
+  def test_get_response_values_from_simple_hash
+    test = GoogleDriveTestRunner::Test.new(1,[],[])
 
-  #
-  # SEEMS LIKE A BUG IN JSONPath?
-  #
-  
-  # def test_get_response_values_when_path_not_found
-  #   test = GoogleDriveTestRunner::Test.new(1,[],[])
+    response = {'name first' => 'one', 'name second' => 'two'}
 
-  #   item1 = {'name' => 'one'}
-  #   item2 = {'name' => 'two'}
+    jsonpath = '$.["name second"]'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal ['two'], result
 
-  #   response = [item1, item2]
+  end
 
-  #   jsonpath = '$.[99].name'
-  #   result = test.get_response_values(response, jsonpath)
-  #   assert_equal [], result
 
-  # end
+  # originally a bug in JSONPath
+  def test_get_empty_response_values_when_path_not_found
+    test = GoogleDriveTestRunner::Test.new(1,[],[])
+
+    item1 = {'name' => 'one'}
+    item2 = {'name' => 'two'}
+
+    response = [item1, item2]
+
+    jsonpath = '$.[99].name'
+    result = test.get_response_values(response, jsonpath)
+    assert_equal [], result
+  end
 
   def test_check_expectations_jsonpath
 
