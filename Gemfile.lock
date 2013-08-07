@@ -69,6 +69,7 @@ GEM
       vegas (~> 0.1.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rspec-mocks (2.13.1)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.4.3)
@@ -101,6 +102,7 @@ DEPENDENCIES
   rake
   resque
   rest-client
+  rspec-mocks
   shotgun
   sinatra
   thin

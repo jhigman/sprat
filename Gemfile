@@ -21,6 +21,7 @@ gem 'capistrano'
 group :development do
   gem 'shotgun'
   gem 'thin'
+  gem 'rspec-mocks'
 end
 
 group :production do

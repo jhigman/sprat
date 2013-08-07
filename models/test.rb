@@ -118,10 +118,10 @@ module GoogleDriveTestRunner
       begin
         params = get_params
         json = api.make_call(params)
-        response = JSON.parse(json)
-        if response.empty?
+        if json.empty?
           msgs << "Response from api was empty"
         else
+          response = JSON.parse(json)
           check_expectations(response, msgs)
         end
       rescue RestClient::Exception => e

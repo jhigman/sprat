@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'rspec/mocks'
 
 require_relative '../../app.rb'
 
@@ -147,8 +148,23 @@ class TestTest < Test::Unit::TestCase
     msgs = []
     test.check_expectations_jsonpath(response, msgs)
 
-    assert_equal msgs, []
+    assert_equal [], msgs
     
+  end
+
+  def test_exec_handles_empty_response
+
+    # set up rspec mock support  
+    RSpec::Mocks::setup(self)    
+
+    test = GoogleDriveTestRunner::Test.new(1,{},[])
+    api = double("GoogleDriveTestRunner::API")
+    api.stub(:make_call) { '' }
+
+    results = test.exec(api)
+
+    assert_equal 'FAIL', results['result'] 
+    assert_equal 'Response from api was empty', results['reason'] 
   end
 
 end
