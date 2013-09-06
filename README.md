@@ -1,7 +1,7 @@
-Satir
+SATIR
 =====
 
-Spreadsheet API Tester
+Spreadsheet API Test Runner
 
 *Not ready for use yet.*
 
