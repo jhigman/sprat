@@ -1,7 +1,7 @@
-gdoc-test-runner
-================
+Satir
+=====
 
-Drive tests from Google Docs
+Spreadsheet API Tester
 
 *Not ready for use yet.*
 
