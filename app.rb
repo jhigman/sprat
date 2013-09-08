@@ -20,7 +20,8 @@ class GDocTestRunner < Sinatra::Application
   set :username, config['username']
   set :password, config['password']
 
-  set :redis, Redis.new(:host => config['redis_host'], :port => config['redis_port'], :db => config['redis_db'])
+  uri = URI.parse(ENV["REDISCLOUD_URL"])
+  set :redis, Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
 end
 
