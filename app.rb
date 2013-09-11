@@ -24,6 +24,8 @@ class GDocTestRunner < Sinatra::Application
   else
     set :redis, Redis.new
   end
+
+  Resque.redis = @settings.redis
   
 end
 

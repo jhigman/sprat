@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 %html  
   %head  
-    %title Google Drive Test Runner  
+    %title Spreadsheet API Test Runner  
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %link(rel="stylesheet" href="/bootstrap/css/bootstrap.css")
     %link(rel="stylesheet" href="assets/css/bootstrap-responsive.css")
@@ -11,19 +11,16 @@
     .navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
         .container
-          %button(type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse")
-            %span class="icon-bar"
-            %span class="icon-bar"
-            %span class="icon-bar"
-          %a(class="brand" href="/")Google Drive Test Runner
-          .nav-collapse.collapse
-            %ul(class="nav")
-              %li(class="active")
-                %a(href="/")Home
-              %li
-                %a(href="/jobs")Jobs
-              %li
-                %a(href="/jobs/new")New Job
+          %a(class="brand" href="/")Spreadsheet API Test Runner
+          .pull-right
+            .nav-collapse.collapse
+              %ul(class="nav")
+                %li
+                  %a(href="/jobs/new")New Job
+                %li
+                  %a(href="/jobs")Jobs
+                %li(class="active")
+                  %a(href="/")Home
 
     .container
   
@@ -32,4 +29,4 @@
 
       %footer
         .pull-right
-          Version 1.4
+          Version 1.5
