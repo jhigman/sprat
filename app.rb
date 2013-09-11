@@ -20,12 +20,13 @@ class GDocTestRunner < Sinatra::Application
 
   if ENV["REDISCLOUD_URL"]
     uri = URI.parse(ENV["REDISCLOUD_URL"])
-    set :redis, Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+    redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   else
-    set :redis, Redis.new
+    redis = Redis.new
   end
+  set :redis, redis
 
-  Resque.redis = @settings.redis
+  Resque.redis = redis
   
 end
 
