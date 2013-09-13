@@ -1,5 +1,5 @@
-set :application, "gdoc-test-runner"
-set :repository,  "https://github.com/jhigman/gdoc-test-runner.git"
+set :application, "sprat"
+set :repository,  "https://github.com/jhigman/sprat.git"
 set :branch, "master"
 set :scm, "git"
 

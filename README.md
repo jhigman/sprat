@@ -1,4 +1,4 @@
-SATIR : Spreadsheet API Test Runner
+Sprat : Spreadsheet API Test Runner
 ===================================
 
 *Not ready for use yet.*
