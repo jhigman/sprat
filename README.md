@@ -1,17 +1,41 @@
 Sprat : Spreadsheet API Test Runner
 ===================================
 
-*Not ready for use yet.*
 
-Requires some environment variables:
+To run the web app:
+
+	bundle exec rackup config.ru
+
+See the homepage:
+
+	http://localhost:9292
+
+
+Accessing Google Spreadsheets
+=============================
+
+Set some environment variables to give access to Google Spreadsheets:
 
 	GOOGLE_DRIVE_USERNAME=username for google drive spreadsheets account
 	GOOGLE_DRIVE_PASSWORD=password for google drive spreadsheets account
 
-	REDISCLOUD_URL=url for redis cloud instance, e.g. redis://rediscloud:1234567890@pub-redis-15001.us-east-1-1.2.ec2.garantiadata.com:15001
-  
 
-Requires redis running at least one test_jobs queue worker, e.g: `env QUEUE=test_jobs bundle exec rake resque:work`
+Running background jobs
+=======================
+
+Run a Resque worker process to process background jobs:
+
+	QUEUE=test_jobs bundle exec rake resque:work
+
+
+Using RedisCloud
+================
+
+By default, the app will use the local Redis client.
+
+To use a RedisCloud instance, set this environment variable:
+
+	REDISCLOUD_URL=url for redis cloud instance, e.g. redis://rediscloud:1234567890@pub-redis-15001.us-east-1-1.2.ec2.garantiadata.com:15001
 
 
 
