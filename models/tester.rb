@@ -1,7 +1,7 @@
-module GoogleDriveTestRunner
+module Sprat
   class Tester
 
-    def initialize(app_settings = GDocTestRunner.settings)
+    def initialize(app_settings = SpratTestRunner.settings)
       @settings = app_settings
       @results = []
     end

@@ -1,4 +1,4 @@
-module GoogleDriveTestRunner
+module Sprat
   class API
 
     def initialize(uri, apikey)

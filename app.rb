@@ -10,7 +10,7 @@ require 'rest_client'
 require 'redis'
 require 'resque'
 
-class GDocTestRunner < Sinatra::Application
+class SpratTestRunner < Sinatra::Application
 
   enable :sessions
   set :session_secret, 'my sooper secret'
@@ -32,4 +32,3 @@ end
 
 require_relative 'models/init'
 require_relative 'routes/init'
-

@@ -9,13 +9,13 @@ get '/jobs' do
   @worksheet = session[:worksheet]
   @jobs = Array.new
   job_ids = settings.redis.lrange("jobs", 0, 20) 
-  job_ids.each {|n| @jobs << GoogleDriveTestRunner::Job.load(n)}
+  job_ids.each {|n| @jobs << Sprat::Job.load(n)}
   haml :jobs
 end
 
 get '/jobs/:id' do
   id = params[:id]
-  @job = GoogleDriveTestRunner::Job.load(id)
+  @job = Sprat::Job.load(id)
   haml :job
 end
 
@@ -29,7 +29,7 @@ post '/jobs' do
   session[:worksheet] = worksheet
   session[:local] = local
 
-  job = GoogleDriveTestRunner::Job.new
+  job = Sprat::Job.new
   job.spreadsheet = spreadsheet
   job.worksheet = worksheet
   job.local = local
@@ -39,7 +39,7 @@ post '/jobs' do
     job.exec
     redirect "/jobs/#{job.id}"
   else
-    if Resque.enqueue(GoogleDriveTestRunner::Job, job.id)
+    if Resque.enqueue(Sprat::Job, job.id)
       redirect "/jobs"
     else
       error "Sorry, something went hideously wrong, and we failed to queue the job"

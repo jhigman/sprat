@@ -6,7 +6,7 @@ require_relative '../../app.rb'
 class TestTest < Test::Unit::TestCase
 
   def test_make_result
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     result = test.make_result([], {}, '')
     assert_equal 'PASS', result['result'] 
@@ -16,7 +16,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_type
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     response = ['one', 'two']
     result = test.get_response_type(response)
@@ -37,7 +37,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_values_simple_array
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     # simple array
     response = [ 'one', 'two' ]
@@ -53,7 +53,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_values_simple_hash
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     # simple hash
     response = { 'first' => 'one', 'second' => 'two' }
@@ -69,7 +69,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_values_with_root
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
     item2 = {'name' => 'two'}
@@ -91,7 +91,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_values_without_root
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
     item2 = {'name' => 'two'}
@@ -105,7 +105,7 @@ class TestTest < Test::Unit::TestCase
   end
 
   def test_get_response_values_from_simple_hash
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     response = {'name first' => 'one', 'name second' => 'two'}
 
@@ -118,7 +118,7 @@ class TestTest < Test::Unit::TestCase
 
   # originally a bug in JSONPath
   def test_get_empty_response_values_when_path_not_found
-    test = GoogleDriveTestRunner::Test.new(1,[],[])
+    test = Sprat::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
     item2 = {'name' => 'two'}
@@ -137,7 +137,7 @@ class TestTest < Test::Unit::TestCase
       { 'path' => '$.root[1].name', 'value' => 'two', 'label' => 'Name2'}
     ]
 
-    test = GoogleDriveTestRunner::Test.new(1,[],outputs)
+    test = Sprat::Test.new(1,[],outputs)
 
     item1 = {'name' => 'one'}
     item2 = {'name' => 'two'}
@@ -157,8 +157,8 @@ class TestTest < Test::Unit::TestCase
     # set up rspec mock support  
     RSpec::Mocks::setup(self)    
 
-    test = GoogleDriveTestRunner::Test.new(1,{},[])
-    api = double("GoogleDriveTestRunner::API")
+    test = Sprat::Test.new(1,{},[])
+    api = double("Sprat::API")
     api.stub(:make_call) { '' }
 
     results = test.exec(api)

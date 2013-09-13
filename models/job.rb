@@ -1,4 +1,4 @@
-module GoogleDriveTestRunner
+module Sprat
   class Job
 
     @queue = :test_jobs
@@ -6,7 +6,7 @@ module GoogleDriveTestRunner
     attr_accessor :id, :spreadsheet, :worksheet, :local, :status, :reason, :results
     attr_accessor :settings 
 
-    def initialize(app_settings = GDocTestRunner.settings)
+    def initialize(app_settings = SpratTestRunner.settings)
       @settings = app_settings
       @status = "Pending"
       @results = []

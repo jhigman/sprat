@@ -1,4 +1,4 @@
-module GoogleDriveTestRunner
+module Sprat
   class Test
 
     def initialize(id, inputs, outputs)
@@ -10,10 +10,6 @@ module GoogleDriveTestRunner
     def get_params
       return @inputs
     end
-
-    # def compare_boolean(left, right)
-    #   return !!left == !!right
-    # end
 
     def is_true(val)
       return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
