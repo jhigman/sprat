@@ -1,7 +1,6 @@
 Sprat : Spreadsheet API Test Runner
 ===================================
 
-
 To run the web app:
 
 	bundle exec rackup config.ru
