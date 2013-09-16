@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Sprat : Spreadsheet API Test Runner" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Sprat</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jhigman/sprat">View on GitHub</a>
+
+          <h1 id="project_title">Sprat</h1>
+          <h2 id="project_tagline">Spreadsheet API Test Runner</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jhigman/sprat/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jhigman/sprat/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>To run the web app:</p>
+
+<pre><code>bundle exec rackup config.ru
+</code></pre>
+
+<p>See the homepage:</p>
+
+<pre><code>http://localhost:9292
+</code></pre>
+
+<h1>
+<a name="accessing-google-spreadsheets" class="anchor" href="#accessing-google-spreadsheets"><span class="octicon octicon-link"></span></a>Accessing Google Spreadsheets</h1>
+
+<p>Set some environment variables to give access to Google Spreadsheets:</p>
+
+<pre><code>GOOGLE_DRIVE_USERNAME=username for google drive spreadsheets account
+GOOGLE_DRIVE_PASSWORD=password for google drive spreadsheets account
+</code></pre>
+
+<h1>
+<a name="running-background-jobs" class="anchor" href="#running-background-jobs"><span class="octicon octicon-link"></span></a>Running background jobs</h1>
+
+<p>Run a Resque worker process to process background jobs:</p>
+
+<pre><code>QUEUE=test_jobs bundle exec rake resque:work
+</code></pre>
+
+<h1>
+<a name="using-rediscloud" class="anchor" href="#using-rediscloud"><span class="octicon octicon-link"></span></a>Using RedisCloud</h1>
+
+<p>By default, the app will use the local Redis client.</p>
+
+<p>To use a RedisCloud instance, set this environment variable:</p>
+
+<pre><code>REDISCLOUD_URL=url for redis cloud instance, e.g. redis://rediscloud:1234567890@pub-redis-15001.us-east-1-1.2.ec2.garantiadata.com:15001
+</code></pre>
+
+<h1>
+<a name="running-tests-from-a-google-drive-spreadsheet" class="anchor" href="#running-tests-from-a-google-drive-spreadsheet"><span class="octicon octicon-link"></span></a>Running tests from a Google Drive Spreadsheet</h1>
+
+<p>The spreadsheet containing tests can be hosted on Google Drive, and the test run can be triggered from the spreadsheet. </p>
+
+<p>Results from the result are then injected back into the spreadsheet, so users can work entirely in the spreadsheet.</p>
+
+<p>You'll need to add this code to the scripts in the spreadsheet, after which a "Test Runner" menu option will appear:</p>
+
+<pre><code>function onOpen() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var menuEntries = [ {name: "Run tests", functionName: "scheduleTestJob"} ];
+  ss.addMenu("Test Runner", menuEntries);
+}
+
+function getConfigValue(name) {
+  var ws = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var values = ws.getDataRange().getValues();
+  for(n=0;n&lt;values.length;++n){
+    if (values[n][0] == name) {
+      return values[n][1];
+    }
+  }
+  return null;
+}
+
+function setConfigValue(name, value) {
+  var ws = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var values = ws.getDataRange().getValues();
+  for(n=0;n&lt;values.length;++n){
+    if (values[n][0] == name) {
+      ws.getRange(n+1,2).setValue(value);
+    }
+  }
+}
+
+function scheduleTestJob() {
+
+  setConfigValue('Status', 'Scheduling..');
+  SpreadsheetApp.flush();
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ws = ss.getActiveSheet();
+
+  var ssName = ss.getName();
+  var wsName = ws.getName();
+
+  var payload =
+      {
+        "spreadsheet" : ssName,
+        "worksheet" : wsName
+      };
+
+  var options =
+     {
+       "method" : "POST",
+       "payload" : payload
+     };
+
+  if (getConfigValue('Test Runner Auth')) {
+    var unamepass = getConfigValue('Test Runner Auth');
+    var digest = Utilities.base64Encode(unamepass);
+    var digestfull = "Basic " + digest;
+    options["headers"] = {'Authorization': digestfull}
+  }
+
+  var testRunnerURL = getConfigValue('Test Runner');
+
+  var response= UrlFetchApp.fetch(testRunnerURL, options);
+  var content = response.getContentText();
+
+  setConfigValue('Status', 'Scheduled');
+
+  SpreadsheetApp.flush();
+}
+</code></pre>
+
+<h2>
+<a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h2>
+
+<p><strong>Julian Higman</strong></p>
+
+<ul>
+<li><a href="http://twitter.com/jhigman">http://twitter.com/jhigman</a></li>
+<li><a href="http://github.com/jhigman">http://github.com/jhigman</a></li>
+</ul><p><strong>Matt Law</strong></p>
+
+<ul>
+<li><a href="http://twitter.com/staringskyward">http://twitter.com/staringskyward</a></li>
+<li><a href="http://github.com/staringskyward">http://github.com/staringskyward</a></li>
+</ul><h2>
+<a name="copyright-and-license" class="anchor" href="#copyright-and-license"><span class="octicon octicon-link"></span></a>Copyright and license</h2>
+
+<p>Copyright (c) 2013 Julian Higman and Matthew Law.</p>
+
+<p>See {file:LICENSE.txt} for license information.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Sprat maintained by <a href="https://github.com/jhigman">jhigman</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
