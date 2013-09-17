@@ -141,7 +141,8 @@ You'll need to add this code to the scripts in the spreadsheet in Google Drive, 
 
 
 
-## Authors
+Authors
+-------
 
 **Julian Higman**
 
