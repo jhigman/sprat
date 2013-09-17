@@ -7,7 +7,7 @@ Write tests for an API in a spreadsheet. Then run the spreadsheet.
 The spreadsheet is in Google Drive, and looks like this:
 
 
-![Sprat MD5 Test](docs/sprat-md5.png)  
+![Sprat MD5 Test](images/sprat-md5.png)  
 
 
 
