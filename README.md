@@ -1,6 +1,27 @@
 Sprat : Spreadsheet API Test Runner
 ===================================
 
+Write tests for an API in a spreadsheet. Then run the spreadsheet.
+------------------------------------------------------------------  
+
+The spreadsheet is in Google Drive, and looks like this:
+
+
+![Sprat MD5 Test](docs/sprat-md5.png)  
+
+
+
+The tests are run from the Test Runner menu, and the spreadsheet updated with the results. 
+
+Try the [demo spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0AnNso1xhxP7xdEpmb3prMWdmMEF6Ti05c29TT3R4Q0E#gid=0) (the script will prompt for permissions when invoking the Test Runner for the first time)
+
+Tests can also be queued, and results viewed, from the [Test Runner UI](http://serene-shore-1334.herokuapp.com/jobs).
+
+
+Running the app
+---------------
+
+
 To run the web app:
 
 	bundle exec rackup config.ru
@@ -11,7 +32,7 @@ See the homepage:
 
 
 Accessing Google Spreadsheets
-=============================
+-----------------------------
 
 Set some environment variables to give access to Google Spreadsheets:
 
@@ -20,7 +41,7 @@ Set some environment variables to give access to Google Spreadsheets:
 
 
 Running background jobs
-=======================
+-----------------------
 
 Run a Resque worker process to process background jobs:
 
@@ -28,7 +49,7 @@ Run a Resque worker process to process background jobs:
 
 
 Using RedisCloud
-================
+----------------
 
 By default, the app will use the local Redis client.
 
@@ -38,14 +59,11 @@ To use a RedisCloud instance, set this environment variable:
 
 
 
-Running tests from a Google Drive Spreadsheet
-=============================================
+Script to run tests from a Google Drive Spreadsheet
+---------------------------------------------------
 
-The spreadsheet containing tests can be hosted on Google Drive, and the test run can be triggered from the spreadsheet. 
 
-Results from the result are then injected back into the spreadsheet, so users can work entirely in the spreadsheet.
-
-You'll need to add this code to the scripts in the spreadsheet, after which a "Test Runner" menu option will appear:
+You'll need to add this code to the scripts in the spreadsheet in Google Drive, after which a "Test Runner" menu option will appear:
 
 
 
