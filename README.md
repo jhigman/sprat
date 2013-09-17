@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.org/jhigman/sprat.png)](https://travis-ci.org/jhigman/sprat)
+
+
 Sprat : Spreadsheet API Test Runner
 ===================================
 
@@ -20,9 +24,6 @@ Tests can also be queued, and results viewed, from the [Test Runner UI](http://s
 
 Running the app
 ---------------
-
-
-[![Build Status](https://travis-ci.org/jhigman/sprat.png)](https://travis-ci.org/jhigman/sprat)
 
 
 To run the web app:
