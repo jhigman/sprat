@@ -22,6 +22,9 @@ Running the app
 ---------------
 
 
+[![Build Status](https://travis-ci.org/jhigman/sprat.png)](https://travis-ci.org/jhigman/sprat)
+
+
 To run the web app:
 
 	bundle exec rackup config.ru
