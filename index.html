@@ -32,10 +32,7 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="sprat--spreadsheet-api-test-runner" class="anchor" href="#sprat--spreadsheet-api-test-runner"><span class="octicon octicon-link"></span></a>Sprat : Spreadsheet API Test Runner</h1>
-
-<h2>
-<a name="write-tests-for-an-api-in-a-spreadsheet-then-run-the-spreadsheet" class="anchor" href="#write-tests-for-an-api-in-a-spreadsheet-then-run-the-spreadsheet"><span class="octicon octicon-link"></span></a>Write tests for an API in a spreadsheet. Then run the spreadsheet.</h2>
+<a name="write-tests-for-an-api-in-a-spreadsheet-then-run-the-spreadsheet" class="anchor" href="#write-tests-for-an-api-in-a-spreadsheet-then-run-the-spreadsheet"><span class="octicon octicon-link"></span></a>Write tests for an API in a spreadsheet. Then run the spreadsheet.</h1>
 
 <p>The spreadsheet is in Google Drive, and looks like this:</p>
 
@@ -47,8 +44,8 @@
 
 <p>Tests can also be queued, and results viewed, from the <a href="http://serene-shore-1334.herokuapp.com/jobs">Test Runner UI</a>.</p>
 
-<h2>
-<a name="running-the-app" class="anchor" href="#running-the-app"><span class="octicon octicon-link"></span></a>Running the app</h2>
+<h1>
+<a name="running-the-app" class="anchor" href="#running-the-app"><span class="octicon octicon-link"></span></a>Running the app</h1>
 
 <p>To run the web app:</p>
 
@@ -60,8 +57,8 @@
 <pre><code>http://localhost:9292
 </code></pre>
 
-<h2>
-<a name="accessing-google-spreadsheets" class="anchor" href="#accessing-google-spreadsheets"><span class="octicon octicon-link"></span></a>Accessing Google Spreadsheets</h2>
+<h1>
+<a name="accessing-google-spreadsheets" class="anchor" href="#accessing-google-spreadsheets"><span class="octicon octicon-link"></span></a>Accessing Google Spreadsheets</h1>
 
 <p>Set some environment variables to give access to Google Spreadsheets:</p>
 
@@ -69,16 +66,16 @@
 GOOGLE_DRIVE_PASSWORD=password for google drive spreadsheets account
 </code></pre>
 
-<h2>
-<a name="running-background-jobs" class="anchor" href="#running-background-jobs"><span class="octicon octicon-link"></span></a>Running background jobs</h2>
+<h1>
+<a name="running-background-jobs" class="anchor" href="#running-background-jobs"><span class="octicon octicon-link"></span></a>Running background jobs</h1>
 
 <p>Run a Resque worker process to process background jobs:</p>
 
 <pre><code>QUEUE=test_jobs bundle exec rake resque:work
 </code></pre>
 
-<h2>
-<a name="using-rediscloud" class="anchor" href="#using-rediscloud"><span class="octicon octicon-link"></span></a>Using RedisCloud</h2>
+<h1>
+<a name="using-rediscloud" class="anchor" href="#using-rediscloud"><span class="octicon octicon-link"></span></a>Using RedisCloud</h1>
 
 <p>By default, the app will use the local Redis client.</p>
 
@@ -87,8 +84,8 @@ GOOGLE_DRIVE_PASSWORD=password for google drive spreadsheets account
 <pre><code>REDISCLOUD_URL=url for redis cloud instance, e.g. redis://rediscloud:1234567890@pub-redis-15001.us-east-1-1.2.ec2.garantiadata.com:15001
 </code></pre>
 
-<h2>
-<a name="script-to-run-tests-from-a-google-drive-spreadsheet" class="anchor" href="#script-to-run-tests-from-a-google-drive-spreadsheet"><span class="octicon octicon-link"></span></a>Script to run tests from a Google Drive Spreadsheet</h2>
+<h1>
+<a name="script-to-run-tests-from-a-google-drive-spreadsheet" class="anchor" href="#script-to-run-tests-from-a-google-drive-spreadsheet"><span class="octicon octicon-link"></span></a>Script to run tests from a Google Drive Spreadsheet</h1>
 
 <p>You'll need to add this code to the scripts in the spreadsheet in Google Drive, after which a "Test Runner" menu option will appear:</p>
 
