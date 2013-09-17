@@ -1,4 +1,3 @@
-
 [![Build Status](https://travis-ci.org/jhigman/sprat.png)](https://travis-ci.org/jhigman/sprat)
 
 
@@ -153,9 +152,3 @@ You'll need to add this code to the scripts in the spreadsheet in Google Drive, 
 
 + [http://twitter.com/staringskyward](http://twitter.com/staringskyward)
 + [http://github.com/staringskyward](http://github.com/staringskyward)
-
-## Copyright and license
-
-Copyright (c) 2013 Julian Higman and Matthew Law.
-
-See {file:LICENSE.txt} for license information.
