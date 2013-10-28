@@ -14,6 +14,10 @@ module Sprat
 
     def get_session
       if !@session
+
+        puts "user : " + @username
+        puts "pass : " + @password
+
         @session = GoogleDrive.login(@username, @password)
         raise "GDrive session failed" unless @session
       end

@@ -3,6 +3,7 @@ require 'sinatra'
 require "yaml"
 require 'haml'
 require "google_drive"
+require "roo"
 require "csv"
 require "json"
 require "jsonpath"

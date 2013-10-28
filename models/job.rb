@@ -47,7 +47,7 @@ module Sprat
 
     def exec()
 
-      source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
+      source = RooSource.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
 
       unless local?
         source.update_status("Running", "Status")
