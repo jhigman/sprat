@@ -33,6 +33,7 @@ post '/jobs' do
   job.spreadsheet = spreadsheet
   job.worksheet = worksheet
   job.local = local
+  job.created = Time.now
   job.save
 
   if request["submit"] == "Run Now"

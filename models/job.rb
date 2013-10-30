@@ -3,8 +3,7 @@ module Sprat
 
     @queue = :test_jobs
     
-    attr_accessor :id, :spreadsheet, :worksheet, :local, :status, :reason, :results
-    attr_accessor :settings 
+    attr_accessor :settings, :id, :spreadsheet, :worksheet, :local, :status, :reason, :results, :created
 
     def initialize(app_settings = SpratTestRunner.settings)
       @settings = app_settings
@@ -13,7 +12,7 @@ module Sprat
     end
 
     def self.var_names
-      ['spreadsheet', 'worksheet', 'local', 'status', 'reason', 'results']
+      ['spreadsheet', 'worksheet', 'local', 'status', 'reason', 'results', 'created']
     end
     
     def self.load(id)

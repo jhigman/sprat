@@ -1,6 +1,8 @@
 - if @job
   %h2= "Job #{@job.id}"
   %dl.dl-horizontal
+    %dt Created
+    %dd= @job.created || " "
     %dt Spreadsheet
     %dd= @job.spreadsheet
     %dt Worksheet

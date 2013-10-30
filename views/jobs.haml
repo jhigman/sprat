@@ -3,6 +3,7 @@
 %table.table.table-bordered.table-hover
   %thead
     %th ID
+    %th Created
     %th Spreadsheet
     %th Worksheet
     %th Status
@@ -10,6 +11,7 @@
   - @jobs.each do |job|
     %tr
       %td= job.id
+      %td= job.created
       %td= job.spreadsheet
       %td= job.worksheet
       %td
