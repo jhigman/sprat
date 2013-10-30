@@ -32,7 +32,7 @@ module Sprat
     def get_api(host = nil)
       api_url = get_config('api')
       if host
-        api_url = 'http://' + host + api_url
+        api_url = 'https://' + host + api_url
       end
       api_key = get_config('apikey')
       api = Sprat::API.new(api_url, api_key)
