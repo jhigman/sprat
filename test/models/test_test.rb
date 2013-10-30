@@ -152,6 +152,26 @@ class TestTest < Test::Unit::TestCase
     
   end
 
+  def test_check_expectations_array
+
+    outputs = [
+      { 'path' => 'one', 'value' => '', 'label' => 'one'},
+      { 'path' => 'two', 'value' => 'Y', 'label' => 'two'},
+      { 'path' => 'three', 'value' => '', 'label' => 'three'}
+    ]
+
+    test = Sprat::Test.new(1,[],outputs)
+
+    # simple array
+    response = [ 'two', 'four', 'five' ]
+
+    msgs = []
+    test.check_expectations_array(response, msgs)
+
+    assert_equal ["four,five should not have been found"], msgs
+    
+  end
+
   def test_exec_handles_empty_response
 
     # set up rspec mock support  

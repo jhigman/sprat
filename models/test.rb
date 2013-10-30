@@ -59,6 +59,10 @@ module Sprat
             msgs << "#{key} should not have been found"
           end
         end
+        downcased.delete(key)
+      end
+      if downcased.size > 0
+        msgs << "#{downcased.join(",")} should not have been found"
       end
     end
 
