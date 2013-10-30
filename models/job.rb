@@ -3,7 +3,7 @@ module Sprat
 
     @queue = :test_jobs
     
-    attr_accessor :settings, :id, :spreadsheet, :worksheet, :local, :status, :reason, :results, :created
+    attr_accessor :settings, :id, :spreadsheet, :worksheet, :host, :local, :status, :reason, :results, :created
 
     def initialize(app_settings = SpratTestRunner.settings)
       @settings = app_settings
@@ -12,7 +12,7 @@ module Sprat
     end
 
     def self.var_names
-      ['spreadsheet', 'worksheet', 'local', 'status', 'reason', 'results', 'created']
+      ['spreadsheet', 'worksheet', 'host', 'local', 'status', 'reason', 'results', 'created']
     end
     
     def self.load(id)
@@ -63,7 +63,7 @@ module Sprat
       resultsArray = []
 
       begin
-        success = tester.run(source)
+        success = tester.run(source, host)
         resultsArray = tester.get_results
         if success
           @status = "PASS"

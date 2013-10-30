@@ -19,8 +19,8 @@ module Sprat
       return false
     end
 
-    def run(source)
-      api = source.get_api
+    def run(source, host)
+      api = source.get_api(host)
       tests = source.get_tests
       tests.each do |test|
         @results << test.exec(api)      

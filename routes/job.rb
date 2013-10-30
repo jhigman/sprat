@@ -23,15 +23,18 @@ post '/jobs' do
 
   spreadsheet = request["spreadsheet"]
   worksheet = request["worksheet"]
+  host = request["host"]
   local = request["local"] ? 1 : 0
 
   session[:spreadsheet] = spreadsheet
   session[:worksheet] = worksheet
+  session[:host] = host
   session[:local] = local
 
   job = Sprat::Job.new
   job.spreadsheet = spreadsheet
   job.worksheet = worksheet
+  job.host = host
   job.local = local
   job.created = Time.now
   job.save

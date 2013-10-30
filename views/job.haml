@@ -3,6 +3,8 @@
   %dl.dl-horizontal
     %dt Created
     %dd= @job.created || " "
+    %dt Host
+    %dd= @job.host || " "
     %dt Spreadsheet
     %dd= @job.spreadsheet
     %dt Worksheet
@@ -32,6 +34,8 @@
   %h2= "New Job"
   %form{ :action => "/jobs", :method => "post"}
     %fieldset
+      %label{:for => "host"} Host
+      %input{:type => "text", :name => "host", :class => "text", :value => @host}
       %label{:for => "spreadsheet"} Spreadsheet Name
       %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
       %label{:for => "worksheet"} Worksheet Name
