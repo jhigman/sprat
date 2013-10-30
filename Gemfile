@@ -19,6 +19,7 @@ gem 'capistrano'
 # gem 'csv'
 
 group :development do
+  gem 'debugger'
   gem 'shotgun'
   gem 'thin'
   gem 'rspec-mocks'

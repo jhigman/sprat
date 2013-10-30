@@ -1,3 +1,4 @@
+require "debugger"
 require "rubygems"
 require 'sinatra'
 require "yaml"
