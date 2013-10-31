@@ -10,8 +10,8 @@ class AppTest < Test::Unit::TestCase
     Sinatra::Application
   end
 
-  def test_with_params
-    get '/', :name => 'Frank'
+  def test_root_path
+    get '/'
     assert_includes last_response.body, 'SPRAT : Spreadsheet API Test Runner' 
   end
 
