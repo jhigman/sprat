@@ -21,7 +21,13 @@ module Sprat
         params = {:apikey => @apikey}.merge(params)
       end
 
-      endpoint = 'https://' + @host + @uri
+      if @host =~ /localhost/ 
+        protocol = 'http'
+      else
+        protocol = 'https'
+      end
+
+      endpoint = protocol + '://' + @host + @uri
       response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
       return response.to_str
 
