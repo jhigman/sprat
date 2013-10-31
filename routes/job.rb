@@ -1,12 +1,11 @@
 get '/jobs/new' do
   @spreadsheet = session[:spreadsheet]
   @worksheet = session[:worksheet]
+  @host = session[:host]
   haml :job
 end
 
 get '/jobs' do
-  @spreadsheet = session[:spreadsheet]
-  @worksheet = session[:worksheet]
   @jobs = Array.new
   job_ids = settings.redis.lrange("jobs", 0, 20) 
   job_ids.each {|n| @jobs << Sprat::Job.load(n)}

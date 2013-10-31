@@ -124,9 +124,6 @@ module Sprat
           response = JSON.parse(json)
           check_expectations(response, msgs)
         end
-      rescue RestClient::Exception => e
-        msgs << "#{e.message}"
-        msgs << "#{e.response.to_s}"
       rescue => e
         msgs << "#{e.message}"
       end

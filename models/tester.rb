@@ -10,13 +10,29 @@ module Sprat
       @results
     end
 
-    def has_failures(results)
-      results.each do |result|
-        if result['result'] != 'PASS'
-          return true
-        end
+    def get_failures
+      @results.select { |result| result['result'] != 'PASS' }
+    end
+
+    def has_failures?
+      failures = get_failures
+      return failures.size > 0
+    end
+
+    def status
+      if has_failures?
+        return "FAIL (" + get_failures.size.to_s + " errors)"
+      else
+        return "PASS"
       end
-      return false
+    end
+
+    def reason
+      if has_failures?
+        return "There were " + get_failures.size.to_s + " test failures"
+      else
+        return "There were " + get_results.size.to_s + " test passes"
+      end
     end
 
     def run(source, host)
@@ -25,7 +41,6 @@ module Sprat
       tests.each do |test|
         @results << test.exec(api)      
       end
-      return !has_failures(@results)
     end
 
   end

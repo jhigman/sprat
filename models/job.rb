@@ -55,6 +55,7 @@ module Sprat
         source.reset_spreadsheet()
       end
 
+      @results = []
       @status = "Running"
       save
 
@@ -63,26 +64,19 @@ module Sprat
       resultsArray = []
 
       begin
-        success = tester.run(source, host)
-        resultsArray = tester.get_results
-        if success
-          @status = "PASS"
-        else
-          @status = "FAIL"
-          @reason = "Tests did not pass"
-        end        
-      rescue => e  
+        tester.run(source, host)
+        @status = tester.status
+        @reason = tester.reason
+      rescue => e
+        @status = "FAIL (" + e.message + ")"
         @reason = e.message + e.backtrace.inspect
-        @status = "FAIL"
-      ensure
-        # always set empty results
-        @results = JSON.generate(resultsArray)
       end
-          
+
+      @results = JSON.generate(tester.get_results)
       save
 
       unless local?
-        source.update_spreadsheet(resultsArray)
+        source.update_spreadsheet(tester.get_results)
         source.update_status(@status, "Status")
         source.update_status(Time.now.to_s, "Finished At")
       end

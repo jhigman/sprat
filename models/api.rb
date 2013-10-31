@@ -13,14 +13,16 @@ module Sprat
         raise RuntimeError.new("No API specified")
       end
 
-      return "";
+      if @host.empty?
+        raise RuntimeError.new("No host specified")
+      end
 
       unless @apikey.nil?
         params = {:apikey => @apikey}.merge(params)
       end
 
-      api_url = 'https://' + @host + @uri
-      response = RestClient.get @uri, {:params => params, :content_type => :json, :accept => :json}
+      endpoint = 'https://' + @host + @uri
+      response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
       return response.to_str
 
     end
