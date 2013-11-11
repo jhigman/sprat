@@ -65,12 +65,12 @@ module Sprat
         tester.run(source, host)
         @status = tester.status
         @reason = tester.reason
+        @results = JSON.generate(tester.get_results)
       rescue => e
         @status = "FAIL (" + e.message + ")"
         @reason = e.message + e.backtrace.inspect
       end
 
-      @results = JSON.generate(tester.get_results)
       save
 
       unless local?
