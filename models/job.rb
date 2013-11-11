@@ -61,8 +61,6 @@ module Sprat
 
       tester = Tester.new(@settings)
 
-      resultsArray = []
-
       begin
         tester.run(source, host)
         @status = tester.status

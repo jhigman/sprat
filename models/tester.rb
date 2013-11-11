@@ -39,7 +39,7 @@ module Sprat
       api = source.get_api(host)
       tests = source.get_tests
       tests.each do |test|
-        @results << test.exec(api)      
+        @results << test.exec(api)
       end
     end
 

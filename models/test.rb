@@ -1,6 +1,8 @@
 module Sprat
   class Test
 
+    attr_accessor :id
+
     def initialize(id, inputs, outputs)
       @id = id
       @inputs = inputs
@@ -124,6 +126,9 @@ module Sprat
           response = JSON.parse(json)
           check_expectations(response, msgs)
         end
+      rescue RestClient::Exception => e
+        msgs << "#{e.message}"
+        msgs << "#{e.response[0,100]}"
       rescue => e
         msgs << "#{e.message}"
       end

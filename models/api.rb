@@ -29,7 +29,7 @@ module Sprat
 
       endpoint = protocol + '://' + @host + @uri
       response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
-      return response.to_str
+      return response.to_str.force_encoding('UTF-8')
 
     end
 
