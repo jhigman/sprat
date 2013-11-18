@@ -5,6 +5,21 @@ require_relative '../../app.rb'
 
 class TestTest < Test::Unit::TestCase
 
+  def test_comma_in_jsonpath_fails
+
+    response = {}
+
+    response["one, two"] = "some value"
+    jsonpath = "$.['one, two']"
+
+    test = Sprat::Test.new(1,[],[])
+
+    result = test.get_response_value(response, jsonpath)
+
+    # really we want to get "some value" returned, but comma is reserved for ranges in jsonpath
+    assert_equal nil, result
+  end
+
   def test_make_result
     test = Sprat::Test.new(1,[],[])
 
