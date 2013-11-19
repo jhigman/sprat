@@ -21,12 +21,15 @@ module Sprat
       val1.to_s == val2.to_s
     end
 
-    def get_response_value(response, jsonpath)
-      JsonPath.new(jsonpath).first(response)
+    def make_jsonpath(str)
+      if(str[0] != '$')
+        str = '$.["' + str + '"]'
+      end
+      str
     end
 
-    def get_response_values(response, jsonpath)
-      JsonPath.new(jsonpath).on(response)
+    def get_response_value(response, jsonpath)
+      JsonPath.new(jsonpath).first(response)
     end
 
     def failed_expectation_message(key, expected, actual)
@@ -37,7 +40,7 @@ module Sprat
     
     def check_expectations_jsonpath(response, msgs)
       @outputs.each do |output|
-        key = output['path']
+        key = make_jsonpath(output['path'])
         expected = output['value']
         actual = get_response_value(response, key)
         if !is_equal(expected, actual)
@@ -50,7 +53,7 @@ module Sprat
       # want to ignore case, so downcase everything
       downcased = response.map(&:downcase)
       @outputs.each do |output|
-        key = output['path']
+        key = output['path'].downcase
         expected = output['value']
         if is_true(expected)
           if !downcased.include? key

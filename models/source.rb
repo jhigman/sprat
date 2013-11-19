@@ -37,12 +37,12 @@ module Sprat
 
     def get_parameter_names
       params = get_config('parameters') || ""
-      return params.split(',').map(&:strip).map(&:downcase)
+      return params.split(',').map(&:strip)
     end
 
     def get_ignore_names
       ignore = get_config('ignore') || ""
-      return ignore.split(',').map(&:strip).map(&:downcase)
+      return ignore.split(',').map(&:strip)
     end
     
     def get_inputs(row, headers)
@@ -89,7 +89,7 @@ module Sprat
       offset = get_config_row('tests')
       i = SKIP_COLUMNS + 1
       while i <= sheet.num_cols  do
-        headers << sheet[offset, i].downcase
+        headers << sheet[offset, i]
         i +=1
       end
       return headers

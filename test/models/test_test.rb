@@ -51,39 +51,39 @@ class TestTest < Test::Unit::TestCase
 
   end
 
-  def test_get_response_values_simple_array
+  def test_get_response_value_simple_array
     test = Sprat::Test.new(1,[],[])
 
     # simple array
     response = [ 'one', 'two' ]
 
     jsonpath = '$.[0]'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'one', result
 
     jsonpath = '$.[1]'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'two', result
 
   end
 
-  def test_get_response_values_simple_hash
+  def test_get_response_value_simple_hash
     test = Sprat::Test.new(1,[],[])
 
     # simple hash
     response = { 'first' => 'one', 'second' => 'two' }
 
     jsonpath = '$.first'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'one', result
 
     jsonpath = '$.second'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'two', result
 
   end
 
-  def test_get_response_values_with_root
+  def test_get_response_value_with_root
     test = Sprat::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
@@ -92,20 +92,15 @@ class TestTest < Test::Unit::TestCase
     response = { 'root' => [item1, item2]}
 
     jsonpath = '$.root[0].name'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'one', result
 
     jsonpath = '$.root[1].name'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
-
-    jsonpath = '$..name'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one','two'], result
-
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'two', result
   end
 
-  def test_get_response_values_without_root
+  def test_get_response_value_without_root
     test = Sprat::Test.new(1,[],[])
 
     item1 = {'name' => 'one'}
@@ -114,22 +109,28 @@ class TestTest < Test::Unit::TestCase
     response = [item1, item2]
 
     jsonpath = '$.[0].name'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['one'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'one', result
 
   end
 
-  def test_get_response_values_from_simple_hash
+  def test_get_response_value_from_simple_hash
     test = Sprat::Test.new(1,[],[])
 
     response = {'name first' => 'one', 'name second' => 'two'}
 
     jsonpath = '$.["name second"]'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal ['two'], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal 'two', result
 
   end
 
+  def test_make_jsonpath()
+    test = Sprat::Test.new(1,[],[])
+    original = 'name second'
+    expected = '$.["name second"]'
+    assert_equal expected, test.make_jsonpath(original)
+  end
 
   # originally a bug in JSONPath
   def test_get_empty_response_values_when_path_not_found
@@ -141,8 +142,8 @@ class TestTest < Test::Unit::TestCase
     response = [item1, item2]
 
     jsonpath = '$.[99].name'
-    result = test.get_response_values(response, jsonpath)
-    assert_equal [], result
+    result = test.get_response_value(response, jsonpath)
+    assert_equal nil, result
   end
 
   def test_check_expectations_jsonpath
@@ -167,7 +168,7 @@ class TestTest < Test::Unit::TestCase
     
   end
 
-  def test_check_expectations_array
+  def test_check_expectations_array_identifies_extras
 
     outputs = [
       { 'path' => 'one', 'value' => '', 'label' => 'one'},
@@ -184,6 +185,24 @@ class TestTest < Test::Unit::TestCase
     test.check_expectations_array(response, msgs)
 
     assert_equal ["four,five should not have been found"], msgs
+    
+  end
+
+  def test_check_expectations_array_ignores_case
+
+    outputs = [
+      { 'path' => 'One', 'value' => 'Y', 'label' => 'one'}
+    ]
+
+    test = Sprat::Test.new(1,[],outputs)
+
+    # simple array
+    response = [ 'ONE' ]
+
+    msgs = []
+    test.check_expectations_array(response, msgs)
+
+    assert_equal [], msgs
     
   end
 
