@@ -188,7 +188,7 @@ class TestTest < Test::Unit::TestCase
     
   end
 
-  def test_check_expectations_array_ignores_case
+  def test_check_expectations_array_is_case_sensitive
 
     outputs = [
       { 'path' => 'One', 'value' => 'Y', 'label' => 'one'}
@@ -202,7 +202,7 @@ class TestTest < Test::Unit::TestCase
     msgs = []
     test.check_expectations_array(response, msgs)
 
-    assert_equal [], msgs
+    assert_equal ["One not found", "ONE should not have been found"], msgs
     
   end
 

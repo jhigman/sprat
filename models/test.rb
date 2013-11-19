@@ -50,24 +50,22 @@ module Sprat
     end
 
     def check_expectations_array(response, msgs)
-      # want to ignore case, so downcase everything
-      downcased = response.map(&:downcase)
       @outputs.each do |output|
-        key = output['path'].downcase
+        key = output['path']
         expected = output['value']
         if is_true(expected)
-          if !downcased.include? key
+          if !response.include? key
             msgs << "#{key} not found"
           end
         else
-          if downcased.include? key
+          if response.include? key
             msgs << "#{key} should not have been found"
           end
         end
-        downcased.delete(key)
+        response.delete(key)
       end
-      if downcased.size > 0
-        msgs << "#{downcased.join(",")} should not have been found"
+      if response.size > 0
+        msgs << "#{response.join(",")} should not have been found"
       end
     end
 
