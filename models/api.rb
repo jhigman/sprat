@@ -1,33 +1,43 @@
 module Sprat
   class API
 
-    def initialize(host, uri, apikey = nil)
+    def initialize(host = nil, uri = nil, apikey = nil)
       @host = host
       @uri = uri
       @apikey = apikey
     end
 
-    def make_call(params = {})
+    def make_endpoint(host, uri)
 
-      if @uri.empty?
-        raise RuntimeError.new("No API specified")
-      end
-
-      if @host.empty?
+      if host.empty?
         raise RuntimeError.new("No host specified")
       end
+
+      if uri.empty?
+        uri = "/"
+      end
+
+      if host =~ /^http/
+        endpoint = host + uri
+      else
+        if host =~ /localhost/ 
+          protocol = 'http'
+        else
+          protocol = 'https'
+        end
+        endpoint = protocol + '://' + host + uri
+      end 
+      endpoint
+    end
+
+    def make_call(params = {})
 
       unless @apikey.nil?
         params = {:apikey => @apikey}.merge(params)
       end
 
-      if @host =~ /localhost/ 
-        protocol = 'http'
-      else
-        protocol = 'https'
-      end
+      endpoint = make_endpoint(@host, @uri)
 
-      endpoint = protocol + '://' + @host + @uri
       response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
       return response.to_str.force_encoding('UTF-8')
 
