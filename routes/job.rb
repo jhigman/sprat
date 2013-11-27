@@ -38,15 +38,15 @@ post '/jobs' do
   job.created = Time.now
   job.save
 
-  if request["submit"] == "Run Now"
-    job.exec
-    redirect "/jobs/#{job.id}"
-  else
+  if request["queue"]
     if Resque.enqueue(Sprat::Job, job.id)
       redirect "/jobs"
     else
       error "Sorry, something went hideously wrong, and we failed to queue the job"
     end
+  else
+    job.exec
+    redirect "/jobs/#{job.id}"
   end
 
 end
