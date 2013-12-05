@@ -5,6 +5,45 @@ require_relative '../../app.rb'
 
 class TestTest < Test::Unit::TestCase
 
+  def test_equals_with_string_and_number
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "6.78"
+    actual_value = 6.78
+    assert test.is_equal(expected_value, actual_value)      
+  end
+
+  def test_equals_with_strings
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "hello"
+    actual_value = "hello"
+    assert test.is_equal(expected_value, actual_value)      
+
+    expected_value = "one, two, three"
+    actual_value = "one, two, three"
+    assert test.is_equal(expected_value, actual_value)      
+  end
+
+  def test_equals_with_arrays
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "hello"
+    actual_value = ["hello"]
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+
+    expected_value = "one,    two,   three"
+    actual_value = ["one", "two", "three"]
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+
+    expected_value = "one,two,three"
+    actual_value = ["one", "   two", "three"]
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+  end
+
   def test_comma_in_jsonpath_fails
 
     response = {}

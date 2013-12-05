@@ -17,8 +17,15 @@ module Sprat
       return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
     end
 
-    def is_equal(val1, val2)
-      val1.to_s == val2.to_s
+    def make_comparable(val)
+      if val.is_a? Array 
+        val = val.join(",")
+      end
+      return val.to_s.gsub(/,\s+/, ",")
+    end
+
+    def is_equal(expected, actual)
+      make_comparable(expected) == make_comparable(actual)
     end
 
     def make_jsonpath(str)
