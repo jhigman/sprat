@@ -65,79 +65,38 @@ To use a RedisCloud instance, set this environment variable:
 Script to run tests from a Google Drive Spreadsheet
 ---------------------------------------------------
 
+There's a library of Google App Script helper functions published by the Sprat Google account. 
 
-You'll need to add this code to the scripts in the spreadsheet in Google Drive, after which a "Test Runner" menu option will appear:
+The Project Key for the published library is : *MNMuL6AHdxrq9UX44qx2DMKxz0Q3oDASm*
+
+To add the library to your spreadsheet, use Tools->Script Editor to open the script editor, then Resources->Libraries to show the libraries dialog. Then search for the Sprat Library by Project Key (as above) and add the latest version to your scripts. (You may also need to enable the "Development Mode" flag).
+
+Then, add this code to a new script, after which a "Test Runner" menu option will appear when you re-open the spreadsheet:
 
 
-
-
-	function onOpen() {
-	  var ss = SpreadsheetApp.getActiveSpreadsheet();
-	  var menuEntries = [ {name: "Run tests", functionName: "scheduleTestJob"} ];
-	  ss.addMenu("Test Runner", menuEntries);
-	}
-
-	function getConfigValue(name) {
-	  var ws = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-	  var values = ws.getDataRange().getValues();
-	  for(n=0;n<values.length;++n){
-	    if (values[n][0] == name) {
-	      return values[n][1];
-	    }
-	  }
-	  return null;
-	}
-
-	function setConfigValue(name, value) {
-	  var ws = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-	  var values = ws.getDataRange().getValues();
-	  for(n=0;n<values.length;++n){
-	    if (values[n][0] == name) {
-	      ws.getRange(n+1,2).setValue(value);
-	    }
-	  }
-	}
-
-	function scheduleTestJob() {
-
-	  setConfigValue('Status', 'Scheduling..');
-	  SpreadsheetApp.flush();
-	  
-	  var ss = SpreadsheetApp.getActiveSpreadsheet();
-	  var ws = ss.getActiveSheet();
-	  
-	  var ssName = ss.getName();
-	  var wsName = ws.getName();
-	  
-	  var payload =
-	      {
-	        "spreadsheet" : ssName,
-	        "worksheet" : wsName
-	      };
-
-	  var options =
-	     {
-	       "method" : "POST",
-	       "payload" : payload
-	     };
-	  
-	  if (getConfigValue('Test Runner Auth')) {
-	    var unamepass = getConfigValue('Test Runner Auth');
-	    var digest = Utilities.base64Encode(unamepass);
-	    var digestfull = "Basic " + digest;
-	    options["headers"] = {'Authorization': digestfull}
-	  }
-	  
-	  var testRunnerURL = getConfigValue('Test Runner');
-	  
-	  var response= UrlFetchApp.fetch(testRunnerURL, options);
-	  var content = response.getContentText();
-
-	  setConfigValue('Status', 'Scheduled');
-
-	  SpreadsheetApp.flush();
-	}
-
+    function onOpen() {
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var menuEntries = [ {name: "Run tests", functionName: "runThisSheet"} , {name: "Schedule tests", functionName: "scheduleThisSheet"} ];    
+      ss.addMenu("Test Runner", menuEntries);    
+      setTestRunnerProperties();    
+    }    
+    
+    function setTestRunnerProperties() {
+      ScriptProperties.setProperty("TestRunnerURL", "http://serene-shore-1334.herokuapp.com/jobs");    
+      ScriptProperties.setProperty("TestRunnerAuth", "");    
+    }    
+    
+    function runThisSheet() {
+      testRunnerURL = ScriptProperties.getProperty("TestRunnerURL");
+      testRunnerAuth = ScriptProperties.getProperty("TestRunnerAuth");
+      runTestJob(testRunnerURL, testRunnerAuth);
+    }
+    
+    function scheduleThisSheet() {
+      testRunnerURL = ScriptProperties.getProperty("TestRunnerURL");
+      testRunnerAuth = ScriptProperties.getProperty("TestRunnerAuth");
+      scheduleTestJob(testRunnerURL, testRunnerAuth);
+    }
 
 
 
