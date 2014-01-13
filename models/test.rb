@@ -20,6 +20,12 @@ module Sprat
     def make_comparable(val)
       if val.is_a? Array 
         val = val.join(",")
+      else
+        # try dates, and convert to ISO8601 if poss
+        dt = Date.parse(val) rescue nil
+        if dt
+          val = dt.to_s  
+        end
       end
       return val.to_s.gsub(/,\s+/, ",")
     end

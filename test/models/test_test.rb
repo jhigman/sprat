@@ -44,6 +44,27 @@ class TestTest < Test::Unit::TestCase
     assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
   end
 
+  def test_equals_with_dates
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "2014-01-24"
+    actual_value = "24-01-2014"
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+
+    actual_value = "23-01-2014"
+    assert !test.is_equal(expected_value, actual_value), "Expected #{expected_value} to NOT equal #{actual_value}"
+  end
+
+  def test_equals_with_dates_ignores_times
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "2014-01-24"
+    actual_value = "24-01-2014T13:45"
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value} ignoring times"
+  end
+
   def test_comma_in_jsonpath_fails
 
     response = {}
