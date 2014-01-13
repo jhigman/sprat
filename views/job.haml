@@ -1,18 +1,28 @@
 - if @job
   %h2= "Job #{@job.id}"
-  %dl.dl-horizontal
-    %dt Created
-    %dd= @job.created || " "
-    %dt Host
-    %dd= @job.host || " "
-    %dt Spreadsheet
-    %dd= @job.spreadsheet
-    %dt Worksheet
-    %dd= "#{@job.worksheet}"
-    %dt Status
-    %dd= "#{@job.status}"
-    %dt Reason
-    %dd= "#{@job.reason}"
+  
+  %form{ :action => "/jobs/new", :method => "get"}
+    %input{:type => "hidden", :name => "host", :class => "text", :value => @job.host}
+    %input{:type => "hidden", :name => "spreadsheet", :class => "text", :value => @job.spreadsheet}
+    %input{:type => "hidden", :name => "worksheet", :class => "text", :value => @job.worksheet}
+
+    %dl.dl-horizontal
+      %dt Created
+      %dd= @job.created || " "
+      %dt Host
+      %dd= @job.host || " "
+      %dt Spreadsheet
+      %dd= @job.spreadsheet
+      %dt Worksheet
+      %dd= "#{@job.worksheet}"
+      %dt Status
+      %dd= "#{@job.status}"
+      %dt Reason
+      %dd= "#{@job.reason}"
+      %dt
+      %dd
+        %p
+        %input{:type => "submit", :name => "rerun", :value => "Run Again", :class => "button"}
 
   %table.table.table-bordered.table-hover
     %thead

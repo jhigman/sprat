@@ -1,7 +1,7 @@
 get '/jobs/new' do
-  @spreadsheet = session[:spreadsheet]
-  @worksheet = session[:worksheet]
-  @host = session[:host]
+  @spreadsheet = request[:spreadsheet] ? request[:spreadsheet] : session[:spreadsheet]
+  @worksheet = request[:worksheet] ? request[:worksheet] : session[:worksheet]
+  @host = request[:host] ? request[:host] : session[:host]
   haml :job
 end
 
