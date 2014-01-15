@@ -7,13 +7,13 @@ module Sprat
       @apikey = apikey
     end
 
-    def make_endpoint(host, uri)
+    def make_endpoint(host = nil, uri = nil)
 
-      if host.empty?
+      if host.nil?
         raise RuntimeError.new("No host specified")
       end
 
-      if uri.empty?
+      if uri.nil?
         uri = "/"
       end
 

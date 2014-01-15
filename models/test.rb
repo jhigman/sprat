@@ -17,21 +17,29 @@ module Sprat
       return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
     end
 
+    def make_expected_date(str, format="%d/%m/%Y")
+      Date.strptime(str,format) rescue nil
+    end
+
+    def make_actual_date(str)
+      Date.parse(str) rescue nil
+    end
+
     def make_comparable(val)
       if val.is_a? Array 
         val = val.join(",")
-      else
-        # try dates, and convert to ISO8601 if poss
-        dt = Date.parse(val) rescue nil
-        if dt
-          val = dt.to_s  
-        end
       end
       return val.to_s.gsub(/,\s+/, ",")
     end
 
     def is_equal(expected, actual)
-      make_comparable(expected) == make_comparable(actual)
+      expected_date = make_expected_date(expected)
+      actual_date = make_actual_date(actual)
+      if expected_date && actual_date
+        return make_comparable(expected_date) ==  make_comparable(actual_date)
+      else
+        return make_comparable(expected) == make_comparable(actual)
+      end
     end
 
     def make_jsonpath(str)

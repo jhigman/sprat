@@ -5,6 +5,34 @@ require_relative '../../app.rb'
 
 class TestTest < Test::Unit::TestCase
 
+  def test_equals_with_integer_and_string
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "23"
+    actual_value = 23
+
+    assert test.is_equal(expected_value, actual_value)      
+  end
+
+  def test_equals_with_integer_strings
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "23"
+    actual_value = "23"
+    assert test.is_equal(expected_value, actual_value)      
+  end
+
+  def test_equals_with_numbers
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = 6.78
+    actual_value = 6.78
+    assert test.is_equal(expected_value, actual_value)      
+  end
+
   def test_equals_with_string_and_number
 
     test = Sprat::Test.new(1,[],[])
@@ -44,24 +72,42 @@ class TestTest < Test::Unit::TestCase
     assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
   end
 
-  def test_equals_with_dates
+  def test_equals_with_expected_dates_in_correct_formats
 
     test = Sprat::Test.new(1,[],[])
 
-    expected_value = "2014-01-24"
-    actual_value = "24-01-2014"
-    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+    actual_value = "2014-01-24"
 
-    actual_value = "23-01-2014"
+    expected_value = "2014-01-24"
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value} with exact string match"
+
+    expected_value = "24/01/2014"
+    assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value} with formatted date match"
+
+    actual_value = "2014-01-23"
     assert !test.is_equal(expected_value, actual_value), "Expected #{expected_value} to NOT equal #{actual_value}"
+  end
+
+  def test_equals_with_expected_dates_in_wrong_formats
+
+    test = Sprat::Test.new(1,[],[])
+
+    actual_value = "2014-01-24"
+
+    expected_value = "24 Jan 2014"
+    assert !test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+
+    expected_value = "2014-01-24T12:34"
+    assert !test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value}"
+
   end
 
   def test_equals_with_dates_ignores_times
 
     test = Sprat::Test.new(1,[],[])
 
-    expected_value = "2014-01-24"
-    actual_value = "24-01-2014T13:45"
+    expected_value = "24/01/2014"
+    actual_value = "2014-01-24T13:45"
     assert test.is_equal(expected_value, actual_value), "Expected #{expected_value} to equal #{actual_value} ignoring times"
   end
 
