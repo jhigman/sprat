@@ -14,7 +14,7 @@ module Sprat
     end
 
     def is_true(val)
-      return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase 
+      return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase
     end
 
     def make_expected_date(str, format="%d/%m/%Y")
@@ -26,7 +26,7 @@ module Sprat
     end
 
     def make_comparable(val)
-      if val.is_a? Array 
+      if val.is_a? Array
         val = val.join(",")
       end
       return val.to_s.gsub(/,\s+/, ",")
@@ -58,7 +58,7 @@ module Sprat
       actual = "nothing" if actual.to_s == ""
       "Expected #{expected.to_s} for '#{key.to_s}', but found #{actual.to_s}"
     end
-    
+
     def check_expectations_jsonpath(response, msgs)
       @outputs.each do |output|
         key = make_jsonpath(output['path'])
@@ -71,6 +71,10 @@ module Sprat
     end
 
     def check_expectations_array(response, msgs)
+      if response.empty? && @outputs.any?{|output| !output['value'].empty?}
+        msgs << "No results returned"
+        return
+      end
       @outputs.each do |output|
         key = output['path']
         expected = output['value']

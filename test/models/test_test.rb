@@ -12,7 +12,7 @@ class TestTest < Test::Unit::TestCase
     expected_value = "23"
     actual_value = 23
 
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
   end
 
   def test_equals_with_integer_strings
@@ -21,7 +21,7 @@ class TestTest < Test::Unit::TestCase
 
     expected_value = "23"
     actual_value = "23"
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
   end
 
   def test_equals_with_numbers
@@ -30,7 +30,7 @@ class TestTest < Test::Unit::TestCase
 
     expected_value = 6.78
     actual_value = 6.78
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
   end
 
   def test_equals_with_string_and_number
@@ -39,7 +39,7 @@ class TestTest < Test::Unit::TestCase
 
     expected_value = "6.78"
     actual_value = 6.78
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
   end
 
   def test_equals_with_strings
@@ -48,11 +48,11 @@ class TestTest < Test::Unit::TestCase
 
     expected_value = "hello"
     actual_value = "hello"
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
 
     expected_value = "one, two, three"
     actual_value = "one, two, three"
-    assert test.is_equal(expected_value, actual_value)      
+    assert test.is_equal(expected_value, actual_value)
   end
 
   def test_equals_with_arrays
@@ -130,10 +130,10 @@ class TestTest < Test::Unit::TestCase
     test = Sprat::Test.new(1,[],[])
 
     result = test.make_result([], {}, '')
-    assert_equal 'PASS', result['result'] 
+    assert_equal 'PASS', result['result']
 
     result = test.make_result(['message one', 'message two'], {}, '')
-    assert_equal 'FAIL', result['result'] 
+    assert_equal 'FAIL', result['result']
   end
 
   def test_get_response_type
@@ -141,19 +141,19 @@ class TestTest < Test::Unit::TestCase
 
     response = ['one', 'two']
     result = test.get_response_type(response)
-    assert_equal 'Array', result 
+    assert_equal 'Array', result
 
     response = [1, 2, 3.5]
     result = test.get_response_type(response)
-    assert_equal 'Array', result 
+    assert_equal 'Array', result
 
     response = {'one' => 'a string', 'two' => 'another string'}
     result = test.get_response_type(response)
-    assert_equal 'Hash', result 
+    assert_equal 'Hash', result
 
     response = {'one' => ['string 1', 'string 2']}
     result = test.get_response_type(response)
-    assert_equal 'Hash', result 
+    assert_equal 'Hash', result
 
   end
 
@@ -271,7 +271,7 @@ class TestTest < Test::Unit::TestCase
     test.check_expectations_jsonpath(response, msgs)
 
     assert_equal [], msgs
-    
+
   end
 
   def test_check_expectations_array_identifies_extras
@@ -291,7 +291,7 @@ class TestTest < Test::Unit::TestCase
     test.check_expectations_array(response, msgs)
 
     assert_equal ["four,five should not have been found"], msgs
-    
+
   end
 
   def test_check_expectations_array_is_case_sensitive
@@ -309,13 +309,32 @@ class TestTest < Test::Unit::TestCase
     test.check_expectations_array(response, msgs)
 
     assert_equal ["One not found", "ONE should not have been found"], msgs
-    
+
   end
+
+  def test_check_expectations_array_identifies_empty_array
+
+    outputs = [
+      { 'path' => 'one', 'value' => 'Y', 'label' => 'one'}
+    ]
+
+    test = Sprat::Test.new(1,[],outputs)
+
+    # simple array
+    response = []
+
+    msgs = []
+    test.check_expectations_array(response, msgs)
+
+    assert_equal ["No results returned"], msgs
+
+  end
+
 
   def test_exec_handles_empty_response
 
-    # set up rspec mock support  
-    RSpec::Mocks::setup(self)    
+    # set up rspec mock support
+    RSpec::Mocks::setup(self)
 
     test = Sprat::Test.new(1,{},[])
     api = double("Sprat::API")
@@ -323,8 +342,8 @@ class TestTest < Test::Unit::TestCase
 
     results = test.exec(api)
 
-    assert_equal 'FAIL', results['result'] 
-    assert_equal 'Response from api was empty', results['reason'] 
+    assert_equal 'FAIL', results['result']
+    assert_equal 'Response from api was empty', results['reason']
   end
 
 end
