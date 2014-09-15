@@ -20,13 +20,13 @@ module Sprat
       if host =~ /^http/
         endpoint = host + uri
       else
-        if host =~ /localhost/ 
+        if host =~ /localhost/
           protocol = 'http'
         else
           protocol = 'https'
         end
         endpoint = protocol + '://' + host + uri
-      end 
+      end
       endpoint
     end
 
@@ -40,6 +40,20 @@ module Sprat
 
       response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
       return response.to_str.force_encoding('UTF-8')
+
+    end
+
+    def make_uri(params = {})
+
+      unless @apikey.nil?
+        params = {:apikey => @apikey}.merge(params)
+      end
+
+      endpoint = make_endpoint(@host, @uri)
+
+      uri = URI(endpoint)
+      uri.query = URI.encode_www_form(params)
+      return uri
 
     end
 

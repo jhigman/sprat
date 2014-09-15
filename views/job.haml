@@ -1,6 +1,6 @@
 - if @job
   %h2= "Job #{@job.id}"
-  
+
   %form{ :action => "/jobs/new", :method => "get"}
     %input{:type => "hidden", :name => "host", :class => "text", :value => @job.host}
     %input{:type => "hidden", :name => "spreadsheet", :class => "text", :value => @job.spreadsheet}
@@ -37,7 +37,8 @@
           %td= result['id']
           %td= result['result']
           %td= result['reason']
-          %td= result['params']
+          %td
+            %a(href='#{result['request']}') #{result['params']}
           %td= result['response']
 
 - else

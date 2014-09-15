@@ -5,6 +5,8 @@ require_relative '../../app.rb'
 
 class TestTest < Test::Unit::TestCase
 
+  include RSpec::Mocks::ExampleMethods
+
   def test_equals_with_integer_and_string
 
     test = Sprat::Test.new(1,[],[])
@@ -128,11 +130,12 @@ class TestTest < Test::Unit::TestCase
 
   def test_make_result
     test = Sprat::Test.new(1,[],[])
+    api = Sprat::API.new('example/com', '/')
 
-    result = test.make_result([], {}, '')
+    result = test.make_result([], {}, '', api)
     assert_equal 'PASS', result['result']
 
-    result = test.make_result(['message one', 'message two'], {}, '')
+    result = test.make_result(['message one', 'message two'], {}, '', api)
     assert_equal 'FAIL', result['result']
   end
 
@@ -334,16 +337,20 @@ class TestTest < Test::Unit::TestCase
   def test_exec_handles_empty_response
 
     # set up rspec mock support
-    RSpec::Mocks::setup(self)
+    # RSpec::Mocks::setup(self)
 
-    test = Sprat::Test.new(1,{},[])
-    api = double("Sprat::API")
-    api.stub(:make_call) { '' }
+    RSpec::Mocks.with_temporary_scope do
+      test = Sprat::Test.new(1,{},[])
+      api = double("Sprat::API")
+      expect(api).to receive(:make_call) { '' }
+      expect(api).to receive(:make_uri) { '/' }
 
-    results = test.exec(api)
+      results = test.exec(api)
 
-    assert_equal 'FAIL', results['result']
-    assert_equal 'Response from api was empty', results['reason']
+      assert_equal 'FAIL', results['result']
+      assert_equal 'Response from api was empty', results['reason']
+    end
+
   end
 
 end

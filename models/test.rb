@@ -122,19 +122,19 @@ module Sprat
       end
     end
 
-    def make_result(msgs, params, json)
+    def make_result(msgs, params, json, api)
+
       ret = Hash.new
       ret['id'] = @id
+      ret['params'] = params
+      ret['request'] = api.make_uri(params)
+      ret['response'] = json
       if msgs.length == 0
         ret['result'] = 'PASS'
         ret['reason'] = ''
-        ret['params'] = params
-        ret['response'] = json
       else
         ret['result'] = 'FAIL'
         ret['reason'] = "#{msgs.join('.')}"
-        ret['params'] = params
-        ret['response'] = json
       end
       return ret
     end
@@ -159,7 +159,7 @@ module Sprat
         msgs << "#{e.message}"
       end
 
-      return make_result(msgs, params, json)
+      return make_result(msgs, params, json, api)
 
     end
 

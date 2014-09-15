@@ -9,7 +9,7 @@ class ApiTest < Test::Unit::TestCase
 
     api = Sprat::API.new
 
-    begin    
+    begin
       api.make_endpoint(nil, "/index.php")
       assert(false, "Didn't get expected exception")
     rescue => e
