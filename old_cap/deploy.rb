@@ -17,7 +17,7 @@ set :user, 'testrun' # username on remote host
 set :group, 'www' # group on remote host
 set :runner, :user
 
-set :host, "#{user}@example.com"
+set :host, "#{user}@testrunner.knowmalaria.co.uk"
 set(:deploy_to) { "/home/#{user}" }
 set :default_environment, {
   'PATH' => "/.rbenv/shims:/home/testrun/.rbenv/bin:$PATH"
@@ -38,13 +38,14 @@ set :public_children, ["bootstrap","css"]
 # Unicorn control tasks
 namespace :deploy do
   task :restart do
-    run "if [ -f #{unicorn_pid} ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{current_path} && bundle exec unicorn -c #{unicorn_conf} -E #{rack_env} -D; fi"
+    stop
+    start
   end
- 
+
   task :start do
     run "cd #{current_path} && bundle exec unicorn -c #{unicorn_conf} -E #{rack_env} -D"
   end
- 
+
   task :stop do
     run "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
   end
