@@ -14,6 +14,7 @@ gem 'rest-client'
 gem 'resque'
 gem 'capistrano'
 gem 'capistrano-bundler'
+gem "capistrano-resque", "~> 0.2.1", require: false
 
 # these are needed too?
 # gem 'rubygems'
