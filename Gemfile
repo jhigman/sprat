@@ -13,6 +13,7 @@ gem 'google_drive'
 gem 'rest-client'
 gem 'resque'
 gem 'capistrano'
+gem 'capistrano-bundler'
 
 # these are needed too?
 # gem 'rubygems'
