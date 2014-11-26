@@ -1,0 +1,75 @@
+# config valid only for Capistrano 3.1
+lock '3.2.1'
+
+set :application, 'sprat'
+set :repo_url, 'https://github.com/jhigman/sprat.git'
+
+set :user, 'sprat' # username on remote host
+
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
+
+# Default deploy_to directory is /var/www/my_app
+set :deploy_to, "/home/#{fetch(:user)}"
+
+# Default value for :scm is :git
+# set :scm, :git
+
+# Default value for :format is :pretty
+# set :format, :pretty
+
+# Default value for :log_level is :debug
+# set :log_level, :debug
+
+# Default value for :pty is false
+# set :pty, true
+
+# Default value for :linked_files is []
+set :linked_files, %w{config/config.yml}
+
+# Default value for linked_dirs is []
+set :linked_dirs, %w{log}
+
+# Default value for default_env is {}
+set :default_env, { 'PATH' => "/.rbenv/shims:/home/#{fetch(:user)}/.rbenv/bin:$PATH" }
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
+
+set :bundle_flags, "--deployment --quiet --binstubs --shebang ruby-local-exec"
+
+set :group, 'www' # group on remote host
+set :runner, :user
+
+set :rack_env, :production
+
+set :current_path, "/home/#{fetch(:user)}/current"
+set :shared_path, "/home/#{fetch(:user)}/shared"
+set :unicorn_conf, "/home/#{fetch(:user)}/current/config/unicorn.rb"
+set :unicorn_pid, "/home/#{fetch(:user)}/shared/pids/unicorn.pid"
+
+set :public_children, ["bootstrap","css"]
+
+namespace :deploy do
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
+      execute "if [ -f #{fetch(:unicorn_pid)} ]; then kill -QUIT `cat #{fetch(:unicorn_pid)}`; fi"
+      execute "cd #{fetch(:current_path)} && bundle exec unicorn -c #{fetch(:unicorn_conf)} -E #{fetch(:rack_env)} -D"
+    end
+  end
+
+  after :publishing, :restart
+
+  task :restart_resque do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute "/home/#{fetch(:user)}/bin/restart_resque_workers.sh"
+    end
+  end
+
+  after :publishing, :restart_resque
+
+end

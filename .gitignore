@@ -2,4 +2,6 @@
 .rbenv-version
 config/deploy.rb
 config/config.yml
+config/deploy/production.rb
 .bundle
+Gemfile.local
