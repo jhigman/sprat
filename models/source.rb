@@ -176,7 +176,7 @@ module Sprat
 
       offset += 1
 
-      while offset < ws.num_rows do
+      while offset <= ws.num_rows do
         set_cell(ws, offset, 2, "")
         set_cell(ws, offset, 3, "")
         offset += 1
