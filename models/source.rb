@@ -2,6 +2,7 @@ module Sprat
   class Source
 
     SKIP_COLUMNS = 3
+    BATCH_SIZE = 200
 
     def initialize(spreadsheet, worksheet, username, password)
       @spreadsheet = spreadsheet
@@ -21,7 +22,6 @@ module Sprat
     end
 
     def get_worksheet
-      # puts "Getting worksheet..."
       if !@ws
         doc = get_session.spreadsheet_by_title(@spreadsheet)
         @ws = doc.worksheet_by_title(@worksheet)
@@ -44,7 +44,7 @@ module Sprat
       ignore = get_config('ignore') || ""
       return ignore.split(',').map(&:strip)
     end
-    
+
     def get_inputs(row, headers)
       param_names = get_parameter_names
       inputs = Hash.new
@@ -93,13 +93,13 @@ module Sprat
         i +=1
       end
       return headers
-    end    
+    end
 
     def get_test_row(index)
       sheet = get_worksheet
       offset = get_config_row('tests')
       test_row = offset + index
-     
+
       if test_row > sheet.num_rows
         return nil
       end
@@ -118,7 +118,7 @@ module Sprat
       tests_start_row = get_config_row('tests')
       i = 1
       while i <= tests_start_row  do
-        label = sheet[i,1] 
+        label = sheet[i,1]
         if label.downcase == name.downcase
           return sheet[i,2]
         end
@@ -131,9 +131,10 @@ module Sprat
       sheet = get_worksheet
       i = 1
       while i <= sheet.num_rows  do
-        label = sheet[i,1] 
+        label = sheet[i,1]
         if label.downcase == name.downcase
           sheet[i,2] = value
+          return
         end
         i +=1
       end
@@ -143,7 +144,7 @@ module Sprat
       sheet = get_worksheet
       i = 1
       while i <= sheet.num_rows  do
-        label = sheet[i,1] 
+        label = sheet[i,1]
         if label.downcase == name.downcase
           return i
         end
@@ -152,15 +153,22 @@ module Sprat
       return nil
     end
 
-    def update_status(msg, item = 'status')    
-      sheet = get_worksheet
+    def update_status(msg, item = 'status')
+      ws = get_worksheet
       set_config(item, msg)
-      sheet.save
+      save(ws)
+    end
+
+    def set_cell(ws, row, col, val)
+      current_val = ws[row, col]
+      if current_val != val
+        ws[row, col] = val
+      end
     end
 
     def reset_spreadsheet()
 
-      puts "Resetting spreadsheet..."
+      puts "Resetting worksheet '#{@worksheet}'..."
 
       ws = get_worksheet
 
@@ -168,18 +176,25 @@ module Sprat
 
       offset += 1
 
-      while offset < ws.max_rows do
-        ws[offset, 2] = ""
-        ws[offset, 3] = ""
+      while offset < ws.num_rows do
+        set_cell(ws, offset, 2, "")
+        set_cell(ws, offset, 3, "")
         offset += 1
+
+        if (offset % BATCH_SIZE) == 0
+          puts "offset now #{offset}"
+          save(ws)
+        end
+
       end
-      ws.save
+
+      save(ws)
 
     end
 
     def update_spreadsheet(test_results)
 
-      puts "Updating spreadsheet with " + test_results.length.to_s + " test results.." 
+      puts "Updating worksheet '#{@worksheet}' with " + test_results.length.to_s + " test results.."
 
       ws = get_worksheet
 
@@ -187,12 +202,39 @@ module Sprat
 
       # NB test IDs start from 1
       test_results.each do |result|
-        ws[offset + result['id'].to_i, 2] = result['result']
-        ws[offset + result['id'].to_i, 3] = result['reason']
+
+        row = result['id'].to_i
+        set_cell(ws, offset + row, 2, result['result'])
+        set_cell(ws, offset + row, 3, result['reason'])
+
+        if (row % BATCH_SIZE) == 0
+          puts "results now #{row}"
+          save(ws)
+        end
+
       end
-      ws.save
+
+      save(ws)
 
     end
+
+    def save(ws)
+      puts "saving.."
+      retries = 0
+      while retries < 3
+        puts "retrying.." unless retries == 0
+        begin
+          ws.save
+          puts "saved.."
+          return
+        rescue => e
+          puts "exception while saving : #{e.message}"
+        end
+        retries += 1
+      end
+      raise RuntimeError.new("Save failed after retries")
+    end
+
 
   end
 end
