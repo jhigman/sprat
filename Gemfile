@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'sinatra'
+gem 'sinatra-contrib'
 
 # other dependencies
 gem 'rake'
@@ -20,6 +21,7 @@ gem 'capistrano-bundler'
 # gem 'csv'
 
 group :development do
+  gem 'byebug'
   gem 'shotgun'
   gem 'thin'
   gem 'rspec-mocks'
