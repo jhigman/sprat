@@ -7,7 +7,7 @@ end
 
 get '/jobs' do
   @jobs = Array.new
-  job_ids = settings.redis.lrange("jobs", 0, 20) 
+  job_ids = settings.redis.lrange("jobs", 0, 100)
   job_ids.each {|n| @jobs << Sprat::Job.load(n)}
   haml :jobs
 end
