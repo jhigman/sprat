@@ -8,9 +8,11 @@ gem 'rake'
 gem 'rack-test'
 gem 'json'
 gem 'nokogiri', '1.5.9'
-gem 'jsonpath', :github => "jhigman/jsonpath"
+gem 'jsonpath', github: 'jhigman/jsonpath'
 gem 'haml'
-gem 'google_drive'
+gem 'google_api'
+gem 'google_drive', github: 'gimite/google-drive-ruby'
+
 gem 'rest-client'
 gem 'resque'
 gem 'capistrano'

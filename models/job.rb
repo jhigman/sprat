@@ -2,7 +2,7 @@ module Sprat
   class Job
 
     @queue = :test_jobs
-    
+
     attr_accessor :settings, :id, :spreadsheet, :worksheet, :host, :local, :status, :reason, :results, :created
 
     def initialize(app_settings = SpratTestRunner.settings)
@@ -14,7 +14,7 @@ module Sprat
     def self.var_names
       ['spreadsheet', 'worksheet', 'host', 'local', 'status', 'reason', 'results', 'created']
     end
-    
+
     def self.load(id)
       job = new
       job.id = id
@@ -41,17 +41,17 @@ module Sprat
     end
 
     def local?
-      return @local.to_s != "0" 
+      return @local.to_s != "0"
     end
 
     def exec()
 
-      source = Source.new(@spreadsheet, @worksheet, @settings.username, @settings.password)
+      source = Source.new(@spreadsheet, @worksheet, @settings)
 
       unless local?
         source.update_status("Running", "Status")
-        source.update_status(Time.now.to_s, "Started At")    
-        source.update_status("", "Finished At")    
+        source.update_status(Time.now.to_s, "Started At")
+        source.update_status("", "Finished At")
         source.reset_spreadsheet()
       end
 

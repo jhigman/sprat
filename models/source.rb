@@ -4,18 +4,44 @@ module Sprat
     SKIP_COLUMNS = 3
     BATCH_SIZE = 200
 
-    def initialize(spreadsheet, worksheet, username, password)
+    def initialize(spreadsheet, worksheet, settings)
       @spreadsheet = spreadsheet
       @worksheet = worksheet
-      @username = username
-      @password = password
+      @settings = settings
       @session = nil
       @local_csv_path = nil
     end
 
     def get_session
       if !@session
-        @session = GoogleDrive.login(@username, @password)
+
+        @client = Google::APIClient.new(application_name: 'TestRunner', application_version: '0.0.1')
+
+        google_client_id = @settings.google_client_id
+        google_p12_file = @settings.google_p12_file
+        google_p12_secret = @settings.google_p12_secret
+
+        key = Google::APIClient::KeyUtils.load_from_pkcs12(
+          google_p12_file,
+          google_p12_secret
+        )
+
+        scopes = [
+          'https://docs.google.com/feeds/',
+          'https://www.googleapis.com/auth/drive',
+          'https://spreadsheets.google.com/feeds/'
+        ]
+
+        asserter = Google::APIClient::JWTAsserter.new(
+            google_client_id,
+            scopes,
+            key
+        )
+
+        @client.authorization = asserter.authorize
+
+        @session = GoogleDrive.login_with_oauth(@client.authorization.access_token)
+
         raise "GDrive session failed" unless @session
       end
       return @session

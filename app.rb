@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/config_file'
 require "yaml"
 require 'haml'
+require 'google/api_client'
 require "google_drive"
 require "csv"
 require "json"
@@ -18,9 +19,6 @@ class SpratTestRunner < Sinatra::Application
   enable :sessions
 
   set :session_secret, 'my sooper secret'
-
-  set :username, ENV["GOOGLE_DRIVE_USERNAME"] unless settings.respond_to? :username
-  set :password, ENV["GOOGLE_DRIVE_PASSWORD"] unless settings.respond_to? :password
 
   if ENV["REDISCLOUD_URL"]
     uri = URI.parse(ENV["REDISCLOUD_URL"])
