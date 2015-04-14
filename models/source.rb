@@ -17,7 +17,7 @@ module Sprat
 
         @client = Google::APIClient.new(application_name: 'TestRunner', application_version: '0.0.1')
 
-        google_client_id = @settings.google_client_id
+        google_client_email = @settings.google_client_email
         google_p12_file = @settings.google_p12_file
         google_p12_secret = @settings.google_p12_secret
 
@@ -33,7 +33,7 @@ module Sprat
         ]
 
         asserter = Google::APIClient::JWTAsserter.new(
-            google_client_id,
+            google_client_email,
             scopes,
             key
         )
