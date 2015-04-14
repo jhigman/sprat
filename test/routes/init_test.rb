@@ -1,9 +1,9 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack/test'
 
 require_relative '../../app.rb'
 
-class AppTest < Test::Unit::TestCase
+class AppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
@@ -12,7 +12,7 @@ class AppTest < Test::Unit::TestCase
 
   def test_root_path
     get '/'
-    assert_includes last_response.body, 'SPRAT : Spreadsheet API Test Runner' 
+    assert_includes last_response.body, 'SPRAT : Spreadsheet API Test Runner'
   end
 
 end

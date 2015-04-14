@@ -159,6 +159,7 @@ DEPENDENCIES
   haml
   json
   jsonpath!
+  minitest
   nokogiri (= 1.5.9)
   rack-test
   rake

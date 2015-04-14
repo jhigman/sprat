@@ -23,6 +23,7 @@ gem 'capistrano-bundler'
 # gem 'csv'
 
 group :development do
+  gem 'minitest'
   gem 'byebug'
   gem 'shotgun'
   gem 'thin'

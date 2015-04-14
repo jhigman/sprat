@@ -1,9 +1,9 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'rspec/mocks'
 
 require_relative '../../app.rb'
 
-class ApiTest < Test::Unit::TestCase
+class ApiTest < Minitest::Test
 
   def test_make_endpoint_throws_exception
 

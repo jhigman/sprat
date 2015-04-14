@@ -1,9 +1,8 @@
-require 'test/unit'
-require 'rspec/mocks'
+require 'minitest/autorun'
 
 require_relative '../../app.rb'
 
-class TestTest < Test::Unit::TestCase
+class TestTest < Minitest::Test
 
   include RSpec::Mocks::ExampleMethods
 
@@ -336,14 +335,12 @@ class TestTest < Test::Unit::TestCase
 
   def test_exec_handles_empty_response
 
-    # set up rspec mock support
-    # RSpec::Mocks::setup(self)
-
     RSpec::Mocks.with_temporary_scope do
       test = Sprat::Test.new(1,{},[])
-      api = double("Sprat::API")
-      expect(api).to receive(:make_call) { '' }
-      expect(api).to receive(:make_uri) { '/' }
+
+      api = MiniTest::Mock.new
+      api.expect(:make_call, '', [{}])
+      api.expect(:make_uri, '', [{}])
 
       results = test.exec(api)
 
