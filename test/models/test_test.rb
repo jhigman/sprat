@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'rspec/mocks'
 
 require_relative '../../app.rb'
 
