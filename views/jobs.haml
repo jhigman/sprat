@@ -1,5 +1,14 @@
 %h2= "Jobs"
 
+%span.pull-right
+  .btn-group
+    %form{ :action => "/reset", :method => "post"}
+      %input{:type => "submit", :name => "reset", :value => "Delete all jobs", :class => "btn btn-warning", :onclick => "return confirm('Are you sure?');"}
+  .btn-group
+    %form{ :action => "/jobs/new", :method => "get"}
+      %input{:type => "submit", :name => "reset", :value => "New job", :class => "btn btn-primary"}
+
+
 %table.table.table-bordered.table-hover
   %thead
     %th ID

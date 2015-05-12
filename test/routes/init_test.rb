@@ -12,7 +12,8 @@ class AppTest < Minitest::Test
 
   def test_root_path
     get '/'
-    assert_includes last_response.body, 'SPRAT : Spreadsheet API Test Runner'
+    assert_equal last_response.status, 302
+    assert_equal last_response.location, "http://example.org/jobs"
   end
 
 end
