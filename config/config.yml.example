@@ -1,2 +1,3 @@
-username: spreadsheets@google.com
-password: abc123
+google_client_email: 316581398213-4f7gkj881vk4oh5b2lmvma48qihlhc3i@developer.gserviceaccount.com
+google_p12_file: /home/sprat/testrunner.p12
+google_p12_secret: notasecret

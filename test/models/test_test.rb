@@ -57,6 +57,15 @@ class TestTest < Minitest::Test
     assert test.is_equal(expected_value, actual_value)
   end
 
+  def test_equals_with_strings_ignores_whitespace
+
+    test = Sprat::Test.new(1,[],[])
+
+    expected_value = "hello, matey"
+    actual_value = "    hello  \r\n    ,  matey "
+    assert test.is_equal(expected_value, actual_value)
+  end
+
   def test_equals_with_arrays
 
     test = Sprat::Test.new(1,[],[])

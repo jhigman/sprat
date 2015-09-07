@@ -11,6 +11,7 @@ require "jsonpath"
 require 'rest_client'
 require 'redis'
 require 'resque'
+#require "byebug"
 
 config_file 'config/config.yml'
 

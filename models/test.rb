@@ -29,7 +29,7 @@ module Sprat
       if val.is_a? Array
         val = val.join(",")
       end
-      return val.to_s.gsub(/,\s+/, ",")
+      return val.to_s.gsub(/\s+/, "")
     end
 
     def is_equal(expected, actual)
