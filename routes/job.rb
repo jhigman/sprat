@@ -6,9 +6,8 @@ get '/jobs/new' do
 end
 
 get '/jobs' do
-  @jobs = Array.new
   job_ids = settings.redis.lrange("jobs", 0, 100)
-  job_ids.each {|n| @jobs << Sprat::Job.load(n)}
+  @jobs = job_ids.map {|n| Sprat::Job.load(n)}
   haml :jobs
 end
 
@@ -35,7 +34,7 @@ post '/jobs' do
   job.worksheet = worksheet
   job.host = host
   job.local = local
-  job.created = Time.now
+  job.created_at = Time.now
   job.save
 
   if request["queue"]

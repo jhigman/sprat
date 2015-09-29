@@ -2,14 +2,18 @@
   %h2= "Job #{@job.id}"
 
   %dl.dl-horizontal
-    %dt Created
-    %dd= @job.created || " "
     %dt Host
     %dd= @job.host || " "
     %dt Spreadsheet
     %dd= @job.spreadsheet
     %dt Worksheet
     %dd= "#{@job.worksheet}"
+    %dt Created
+    %dd= @job.created_at || " "
+    %dt Started
+    %dd= @job.started_at || " "
+    %dt Finished
+    %dd= @job.finished_at || " "
     %dt Status
     %dd= "#{@job.status}"
     %dt Reason
@@ -30,7 +34,7 @@
       %th Parameters
       %th Response
     %tbody
-      - JSON.parse("#{@job.results}").each do |result|
+      - @job.get_results.each do |result|
         %tr
           %td= result['id']
           %td= result['result']

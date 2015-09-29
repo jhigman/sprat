@@ -3,23 +3,22 @@ module Sprat
 
     @queue = :test_jobs
 
-    attr_accessor :settings, :id, :spreadsheet, :worksheet, :host, :local, :status, :reason, :results, :created
+    attr_accessor :settings, :id, :spreadsheet, :worksheet, :host, :local, :status, :reason, :created_at, :started_at, :finished_at
 
     def initialize(app_settings = SpratTestRunner.settings)
       @settings = app_settings
       @status = "Pending"
-      @results = []
     end
 
     def self.var_names
-      ['spreadsheet', 'worksheet', 'host', 'local', 'status', 'reason', 'results', 'created']
+      ['spreadsheet', 'worksheet', 'host', 'local', 'status', 'reason', 'created_at', 'started_at', 'finished_at']
     end
 
     def self.load(id)
       job = new
       job.id = id
       Job.var_names.each do |name|
-        job.instance_variable_set("@#{name}", job.settings.redis.hget("jobs:#{job.id}", name))
+        job.instance_variable_set("@#{name}", job.settings.redis.hget("job:#{job.id}", name))
       end
       job
     end
@@ -32,52 +31,75 @@ module Sprat
       @id
     end
 
-    def save
-      @id = get_id
+    def save(source = nil)
+      id = get_id
       Job.var_names.each do |name|
-        value = instance_variable_get("@#{name}")
-        @settings.redis.hset("jobs:#{@id}", name, value.to_s)
+        @settings.redis.hset("job:#{id}", name, instance_variable_get("@#{name}").to_s)
       end
+
+      if source && !local?
+        source.update_status(@status, "Status")
+        source.update_status(@started_at.to_s, "Started At")
+        source.update_status(@finished_at.to_s, "Finished At")
+        if @finished_at
+          source.update_spreadsheet(get_results)
+        else
+          source.reset_spreadsheet()
+        end
+      end
+
     end
 
     def local?
-      return @local.to_s != "0"
+      @local.to_s != "0"
     end
+
+
+    def add_result(result)
+      @settings.redis.sadd("job:#{@id}:results", JSON.generate(result))
+    end
+
+    def get_results
+      @settings.redis.smembers("job:#{@id}:results").map{|r| JSON.parse(r)}.sort_by{|r| r['id']}
+    end
+
+    def get_failures
+      get_results.select { |result| result['result'] != 'PASS' }
+    end
+
+    def status
+      get_failures.size > 0 ?  "FAIL (" + get_failures.size.to_s + " errors)" : "PASS"
+    end
+
+    def reason
+      get_failures.size > 0 ? "There were " + get_failures.size.to_s + " test failures" : "There were " + get_results.size.to_s + " test passes"
+    end
+
 
     def exec()
 
       source = Source.new(@spreadsheet, @worksheet, @settings)
 
-      unless local?
-        source.update_status("Running", "Status")
-        source.update_status(Time.now.to_s, "Started At")
-        source.update_status("", "Finished At")
-        source.reset_spreadsheet()
-      end
-
-      @results = []
       @status = "Running"
-      save
+      @started_at = Time.now
 
-      tester = Tester.new(@settings)
+      save(source)
 
       begin
-        tester.run(source, host)
-        @status = tester.status
-        @reason = tester.reason
-        @results = JSON.generate(tester.get_results)
+        api = source.get_api(host)
+        source.get_tests.each do |test|
+          add_result(test.exec(api))
+        end
+        @status = status
+        @reason = reason
       rescue => e
         @status = "FAIL (" + e.message + ")"
         @reason = e.message + e.backtrace.inspect
       end
 
-      save
+      @finished_at = Time.now
 
-      unless local?
-        source.update_spreadsheet(tester.get_results)
-        source.update_status(@status, "Status")
-        source.update_status(Time.now.to_s, "Finished At")
-      end
+      save(source)
 
     end
 
