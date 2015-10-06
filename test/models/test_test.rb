@@ -137,17 +137,6 @@ class TestTest < Minitest::Test
     assert_equal nil, result
   end
 
-  def test_make_result
-    test = Sprat::Test.new(1,[],[])
-    api = Sprat::API.new('example/com', '/')
-
-    result = test.make_result([], {}, '', api)
-    assert_equal 'PASS', result['result']
-
-    result = test.make_result(['message one', 'message two'], {}, '', api)
-    assert_equal 'FAIL', result['result']
-  end
-
   def test_get_response_type
     test = Sprat::Test.new(1,[],[])
 
@@ -354,8 +343,8 @@ class TestTest < Minitest::Test
 
       results = test.exec(api)
 
-      assert_equal 'FAIL', results['result']
-      assert_equal 'Response from api was empty', results['reason']
+      assert_equal 'FAIL', results.result
+      assert_equal 'Response from api was empty', results.reason
     end
 
   end

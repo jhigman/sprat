@@ -6,14 +6,14 @@ get '/jobs/new' do
 end
 
 get '/jobs' do
-  job_ids = settings.redis.lrange("jobs", 0, 100)
-  @jobs = job_ids.map {|n| Sprat::Job.load(n)}
+  @jobs = settings.store.load_jobs
   haml :jobs
 end
 
 get '/jobs/:id' do
   id = params[:id]
-  @job = Sprat::Job.load(id)
+  @job = settings.store.load_job(id)
+  @results = settings.store.load_results(@job)
   haml :job
 end
 
@@ -35,17 +35,15 @@ post '/jobs' do
   job.host = host
   job.local = local
   job.created_at = Time.now
-  job.save
+
+  job = settings.store.save_job(job)
 
   if request["queue"]
-    if Resque.enqueue(Sprat::Job, job.id)
-      redirect "/jobs"
-    else
-      error "Sorry, something went hideously wrong, and we failed to queue the job"
-    end
+    Resque.enqueue(Sprat::Job, job.id)
   else
-    job.exec
-    redirect "/jobs/#{job.id}"
+    Sprat::JobExecutor.new(settings.store).execute(job)
   end
+
+  redirect "/jobs/#{job.id}"
 
 end

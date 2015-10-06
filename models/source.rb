@@ -4,7 +4,7 @@ module Sprat
     SKIP_COLUMNS = 3
     BATCH_SIZE = 200
 
-    def initialize(spreadsheet, worksheet, settings)
+    def initialize(spreadsheet, worksheet, settings = SpratTestRunner.settings)
       @spreadsheet = spreadsheet
       @worksheet = worksheet
       @settings = settings
@@ -15,7 +15,7 @@ module Sprat
     def get_session
       if !@session
 
-        @client = Google::APIClient.new(application_name: 'TestRunner', application_version: '0.0.1')
+        client = Google::APIClient.new(application_name: 'TestRunner', application_version: '0.0.1')
 
         google_client_email = @settings.google_client_email
         google_p12_file = @settings.google_p12_file
@@ -38,13 +38,13 @@ module Sprat
             key
         )
 
-        @client.authorization = asserter.authorize
+        client.authorization = asserter.authorize
 
-        @session = GoogleDrive.login_with_oauth(@client.authorization.access_token)
+        @session = GoogleDrive.login_with_oauth(client.authorization.access_token)
 
         raise "GDrive session failed" unless @session
       end
-      return @session
+      @session
     end
 
     def get_worksheet
@@ -52,7 +52,7 @@ module Sprat
         doc = get_session.spreadsheet_by_title(@spreadsheet)
         @ws = doc.worksheet_by_title(@worksheet)
       end
-      return @ws
+      @ws
     end
 
     def get_api(host = nil)
@@ -63,12 +63,12 @@ module Sprat
 
     def get_parameter_names
       params = get_config('parameters') || ""
-      return params.split(',').map(&:strip)
+      params.split(',').map(&:strip)
     end
 
     def get_ignore_names
       ignore = get_config('ignore') || ""
-      return ignore.split(',').map(&:strip)
+      ignore.split(',').map(&:strip)
     end
 
     def get_inputs(row, headers)
@@ -79,7 +79,7 @@ module Sprat
           inputs[header] = row[SKIP_COLUMNS+index]
         end
       end
-      return inputs
+      inputs
     end
 
     def get_outputs(row, headers)
@@ -93,7 +93,7 @@ module Sprat
           outputs << { 'label' => label, 'path' => path, 'value' => value }
         end
       end
-      return outputs
+      outputs
     end
 
     def get_tests
@@ -106,7 +106,7 @@ module Sprat
         tests << Sprat::Test.new(index, inputs, outputs)
         index += 1
       end
-      return tests
+      tests
     end
 
     def get_test_headers
@@ -118,7 +118,7 @@ module Sprat
         headers << sheet[offset, i]
         i +=1
       end
-      return headers
+      headers
     end
 
     def get_test_row(index)
@@ -136,7 +136,7 @@ module Sprat
         ret << sheet[test_row, i]
         i +=1
       end
-      return ret
+      ret
     end
 
     def get_config(name)
@@ -150,7 +150,7 @@ module Sprat
         end
         i +=1
       end
-      return nil
+      nil
     end
 
     def set_config(name, value)
@@ -176,7 +176,7 @@ module Sprat
         end
         i +=1
       end
-      return nil
+      nil
     end
 
     def update_status(msg, item = 'status')
@@ -229,9 +229,9 @@ module Sprat
       # NB test IDs start from 1
       test_results.each do |result|
 
-        row = result['id'].to_i
-        set_cell(ws, offset + row, 2, result['result'])
-        set_cell(ws, offset + row, 3, result['reason'])
+        row = result.id
+        set_cell(ws, offset + row, 2, result.result)
+        set_cell(ws, offset + row, 3, result.reason)
 
         if (row % BATCH_SIZE) == 0
           puts "results now #{row}"
@@ -259,6 +259,16 @@ module Sprat
         retries += 1
       end
       raise RuntimeError.new("Save failed after retries")
+    end
+
+    def save_job(job)
+      update_status(job.status, "Status")
+      update_status(job.started_at.to_s, "Started At")
+      update_status(job.finished_at.to_s, "Finished At")
+    end
+
+    def save_results(results = [])
+      results.empty? ? reset_spreadsheet : update_spreadsheet(results)
     end
 
 

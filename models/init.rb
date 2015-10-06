@@ -1,4 +1,7 @@
+require_relative 'store'
 require_relative 'source'
 require_relative 'test'
 require_relative 'api'
 require_relative 'job'
+require_relative 'job_executor'
+require_relative 'result'

@@ -34,14 +34,14 @@
       %th Parameters
       %th Response
     %tbody
-      - @job.get_results.each do |result|
+      - @results.each do |result|
         %tr
-          %td= result['id']
-          %td= result['result']
-          %td= result['reason']
+          %td= result.id
+          %td= result.result
+          %td= result.reason
           %td
-            %a(href='#{result['request']}') #{result['params']}
-          %td= result['response']
+            %a(href='#{result.request}') #{result.params}
+          %td= result.response
 
 - else
   %h2= "New Job"

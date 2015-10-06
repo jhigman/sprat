@@ -7,7 +7,7 @@ module Sprat
       @apikey = apikey
     end
 
-    def make_endpoint(host = nil, uri = nil)
+    def make_endpoint(host, uri)
 
       if host.nil?
         raise RuntimeError.new("No host specified")
@@ -32,20 +32,20 @@ module Sprat
 
     def make_call(params = {})
 
-      unless @apikey.nil?
+      if @apikey
         params = {:apikey => @apikey}.merge(params)
       end
 
       endpoint = make_endpoint(@host, @uri)
 
       response = RestClient.get endpoint, {:params => params, :content_type => :json, :accept => :json}
-      return response.to_str.force_encoding('UTF-8')
+      response.to_str.force_encoding('UTF-8')
 
     end
 
     def make_uri(params = {})
 
-      unless @apikey.nil?
+      if @apikey
         params = {:apikey => @apikey}.merge(params)
       end
 
@@ -53,7 +53,7 @@ module Sprat
 
       uri = URI(endpoint)
       uri.query = URI.encode_www_form(params)
-      return uri
+      uri
 
     end
 

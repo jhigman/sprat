@@ -9,12 +9,8 @@ module Sprat
       @outputs = outputs
     end
 
-    def get_params
-      return @inputs
-    end
-
     def is_true(val)
-      return ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase
+      ['y', 'yes', 'true', 't', '1'].include? val.to_s.downcase
     end
 
     def make_expected_date(str, format="%d/%m/%Y")
@@ -29,16 +25,16 @@ module Sprat
       if val.is_a? Array
         val = val.join(",")
       end
-      return val.to_s.gsub(/\s+/, "")
+      val.to_s.gsub(/\s+/, "")
     end
 
     def is_equal(expected, actual)
       expected_date = make_expected_date(expected)
       actual_date = make_actual_date(actual)
       if expected_date && actual_date
-        return make_comparable(expected_date) ==  make_comparable(actual_date)
+        make_comparable(expected_date) ==  make_comparable(actual_date)
       else
-        return make_comparable(expected) == make_comparable(actual)
+        make_comparable(expected) == make_comparable(actual)
       end
     end
 
@@ -122,29 +118,12 @@ module Sprat
       end
     end
 
-    def make_result(msgs, params, json, api)
-
-      ret = Hash.new
-      ret['id'] = @id
-      ret['params'] = params
-      ret['request'] = api.make_uri(params)
-      ret['response'] = json
-      if msgs.length == 0
-        ret['result'] = 'PASS'
-        ret['reason'] = ''
-      else
-        ret['result'] = 'FAIL'
-        ret['reason'] = "#{msgs.join('.')}"
-      end
-      return ret
-    end
-
     def exec(api)
 
       msgs = []
 
       begin
-        params = get_params
+        params = @inputs
         json = api.make_call(params)
         if json.empty?
           msgs << "Response from api was empty"
@@ -159,7 +138,7 @@ module Sprat
         msgs << "#{e.message}"
       end
 
-      return make_result(msgs, params, json, api)
+      Sprat::Result.new(@id, params, api.make_uri(params), json, msgs)
 
     end
 

@@ -13,6 +13,9 @@ require 'redis'
 require 'resque'
 #require "byebug"
 
+require_relative 'models/init'
+require_relative 'routes/init'
+
 config_file 'config/config.yml'
 
 class SpratTestRunner < Sinatra::Application
@@ -27,11 +30,9 @@ class SpratTestRunner < Sinatra::Application
   else
     redis = Redis.new
   end
-  set :redis, redis
 
   Resque.redis = redis
 
-end
+  set :store, Sprat::Store.new(redis)
 
-require_relative 'models/init'
-require_relative 'routes/init'
+end

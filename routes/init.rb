@@ -5,6 +5,6 @@ get '/' do
 end
 
 post '/reset' do
-  SpratTestRunner.settings.redis.flushall
+  SpratTestRunner.settings.store.clear
   redirect "/jobs"
 end
