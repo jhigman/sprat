@@ -9,7 +9,6 @@ module Sprat
       @worksheet = worksheet
       @settings = settings
       @session = nil
-      @local_csv_path = nil
     end
 
     def get_session
@@ -55,89 +54,10 @@ module Sprat
       @ws
     end
 
-    def get_api(host = nil)
-      api_url = get_config('api')
-      api_key = get_config('apikey')
-      api = Sprat::API.new(host, api_url, api_key)
+    def sheet
+      get_worksheet.rows
     end
 
-    def get_parameter_names
-      params = get_config('parameters') || ""
-      params.split(',').map(&:strip)
-    end
-
-    def get_ignore_names
-      ignore = get_config('ignore') || ""
-      ignore.split(',').map(&:strip)
-    end
-
-    def get_inputs(row, headers)
-      param_names = get_parameter_names
-      inputs = Hash.new
-      headers.each_with_index do |header, index|
-        if param_names.include? header
-          inputs[header] = row[SKIP_COLUMNS+index]
-        end
-      end
-      inputs
-    end
-
-    def get_outputs(row, headers)
-      ignore_names = get_ignore_names + get_parameter_names
-      outputs = []
-      headers.each_with_index do |header, index|
-        if !ignore_names.include? header
-          label = header
-          value = row[SKIP_COLUMNS+index]
-          path = get_config(header) || header
-          outputs << { 'label' => label, 'path' => path, 'value' => value }
-        end
-      end
-      outputs
-    end
-
-    def get_tests
-      tests = []
-      headers = get_test_headers
-      index = 1
-      while (row = get_test_row(index))
-        inputs = get_inputs(row, headers)
-        outputs = get_outputs(row, headers)
-        tests << Sprat::Test.new(index, inputs, outputs)
-        index += 1
-      end
-      tests
-    end
-
-    def get_test_headers
-      headers = Array.new
-      sheet = get_worksheet
-      offset = get_config_row('tests')
-      i = SKIP_COLUMNS + 1
-      while i <= sheet.num_cols  do
-        headers << sheet[offset, i]
-        i +=1
-      end
-      headers
-    end
-
-    def get_test_row(index)
-      sheet = get_worksheet
-      offset = get_config_row('tests')
-      test_row = offset + index
-
-      if test_row > sheet.num_rows
-        return nil
-      end
-
-      ret = Array.new
-      i = 1
-      while i <= sheet.num_cols  do
-        ret << sheet[test_row, i]
-        i +=1
-      end
-      ret
-    end
 
     def get_config(name)
       sheet = get_worksheet
@@ -261,16 +181,22 @@ module Sprat
       raise RuntimeError.new("Save failed after retries")
     end
 
-    def save_job(job)
+    # def save_job(job)
+    #   update_status(job.status, "Status")
+    #   update_status(job.started_at.to_s, "Started At")
+    #   update_status(job.finished_at.to_s, "Finished At")
+    # end
+
+    # def save_results(results = [])
+    #   results.empty? ? reset_spreadsheet : update_spreadsheet(results)
+    # end
+
+    def save(job, results = [])
       update_status(job.status, "Status")
       update_status(job.started_at.to_s, "Started At")
       update_status(job.finished_at.to_s, "Finished At")
-    end
-
-    def save_results(results = [])
       results.empty? ? reset_spreadsheet : update_spreadsheet(results)
     end
-
 
   end
 end

@@ -15,6 +15,15 @@ module Sprat
       @redis.get(JOB_ID_KEY).to_i
     end
 
+    def save(job, results = [])
+      job.id ||= next_id
+      @redis.set("job:#{job.id}", YAML.dump(job))
+      results.each do |result|
+        @redis.lpush("job:#{job.id}:results", YAML.dump(result))
+      end
+      job
+    end
+
     def save_job(job)
       job.id ||= next_id
       @redis.set("job:#{job.id}", YAML.dump(job))

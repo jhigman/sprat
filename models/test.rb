@@ -1,7 +1,7 @@
 module Sprat
   class Test
 
-    attr_accessor :id
+    attr_accessor :id, :inputs, :outputs
 
     def initialize(id, inputs, outputs)
       @id = id

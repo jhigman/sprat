@@ -11,7 +11,7 @@ require "jsonpath"
 require 'rest_client'
 require 'redis'
 require 'resque'
-#require "byebug"
+require "byebug"
 
 require_relative 'models/init'
 require_relative 'routes/init'
