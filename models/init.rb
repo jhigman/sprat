@@ -1,4 +1,5 @@
 require_relative 'store'
+require_relative 'sheet'
 require_relative 'source'
 require_relative 'test'
 require_relative 'api'

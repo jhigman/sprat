@@ -17,13 +17,13 @@ module Sprat
 
     def save_job(job)
       job.id ||= next_id
-      @redis.set("job:#{job.id}", YAML.dump(job))
+      @redis.set("job:#{job.id}", job.to_json)
       job
     end
 
     def load_job(id)
-      yaml = @redis.get("job:#{id}")
-      YAML.load(yaml) unless yaml.nil?
+      json = @redis.get("job:#{id}")
+      Sprat::Job.from_json(json) unless json.nil?
     end
 
     def load_jobs(start = max_id, number = 200)
@@ -32,13 +32,13 @@ module Sprat
 
     def save_results(job, results)
       results.each do |result|
-        @redis.lpush("job:#{job.id}:results", YAML.dump(result))
+        @redis.lpush("job:#{job.id}:results", result.to_json)
       end
     end
 
     def load_results(job)
-      yamls = @redis.lrange("job:#{job.id}:results", 0, -1)
-      yamls.map{|yaml| YAML.load(yaml)}.sort_by(&:id)
+      jsons = @redis.lrange("job:#{job.id}:results", 0, -1)
+      jsons.map{|json| Sprat::Result.from_json(json)}.sort_by(&:id)
     end
 
     def clear

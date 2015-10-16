@@ -1,7 +1,7 @@
 module Sprat
   class Test
 
-    attr_accessor :id
+    attr_accessor :id, :inputs, :outputs
 
     def initialize(id, inputs, outputs)
       @id = id
@@ -138,7 +138,7 @@ module Sprat
         msgs << "#{e.message}"
       end
 
-      Sprat::Result.new(@id, params, api.make_uri(params), json, msgs)
+      Sprat::Result.new(@id, params, api.make_uri(params), json, (msgs.empty? ? 'PASS' : 'FAIL'), msgs.join('.'))
 
     end
 

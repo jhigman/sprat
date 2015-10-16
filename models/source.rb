@@ -4,273 +4,117 @@ module Sprat
     SKIP_COLUMNS = 3
     BATCH_SIZE = 200
 
-    def initialize(spreadsheet, worksheet, settings = SpratTestRunner.settings)
-      @spreadsheet = spreadsheet
-      @worksheet = worksheet
-      @settings = settings
-      @session = nil
-      @local_csv_path = nil
-    end
-
-    def get_session
-      if !@session
-
-        client = Google::APIClient.new(application_name: 'TestRunner', application_version: '0.0.1')
-
-        google_client_email = @settings.google_client_email
-        google_p12_file = @settings.google_p12_file
-        google_p12_secret = @settings.google_p12_secret
-
-        key = Google::APIClient::KeyUtils.load_from_pkcs12(
-          google_p12_file,
-          google_p12_secret
-        )
-
-        scopes = [
-          'https://docs.google.com/feeds/',
-          'https://www.googleapis.com/auth/drive',
-          'https://spreadsheets.google.com/feeds/'
-        ]
-
-        asserter = Google::APIClient::JWTAsserter.new(
-            google_client_email,
-            scopes,
-            key
-        )
-
-        client.authorization = asserter.authorize
-
-        @session = GoogleDrive.login_with_oauth(client.authorization.access_token)
-
-        raise "GDrive session failed" unless @session
-      end
-      @session
-    end
-
-    def get_worksheet
-      if !@ws
-        doc = get_session.spreadsheet_by_title(@spreadsheet)
-        @ws = doc.worksheet_by_title(@worksheet)
-      end
-      @ws
+    def initialize(sheet)
+      @sheet = sheet
     end
 
     def get_api(host = nil)
-      api_url = get_config('api')
-      api_key = get_config('apikey')
-      api = Sprat::API.new(host, api_url, api_key)
+      api_url = get('api')
+      api_key = get('apikey')
+      Sprat::API.new(host, api_url, api_key)
     end
 
-    def get_parameter_names
-      params = get_config('parameters') || ""
-      params.split(',').map(&:strip)
-    end
-
-    def get_ignore_names
-      ignore = get_config('ignore') || ""
-      ignore.split(',').map(&:strip)
-    end
-
-    def get_inputs(row, headers)
-      param_names = get_parameter_names
-      inputs = Hash.new
-      headers.each_with_index do |header, index|
-        if param_names.include? header
-          inputs[header] = row[SKIP_COLUMNS+index]
+    def inputs(row, headers)
+      inputs = {}
+      parameters = get_array("parameters")
+      parameters.each do |parameter|
+        if idx = headers.find_index(parameter)
+          inputs[parameter] = row[idx]
         end
       end
       inputs
     end
 
-    def get_outputs(row, headers)
-      ignore_names = get_ignore_names + get_parameter_names
+    def outputs(row, headers)
       outputs = []
-      headers.each_with_index do |header, index|
-        if !ignore_names.include? header
-          label = header
-          value = row[SKIP_COLUMNS+index]
-          path = get_config(header) || header
-          outputs << { 'label' => label, 'path' => path, 'value' => value }
+      ignore_names = ['tests','result','reason'] + get_array('ignore') + get_array('parameters')
+      headers.each_with_index do |header, idx|
+        unless ignore_names.include?(header)
+          outputs << { 'label' => header, 'path' => get(header, header), 'value' => row[idx] }
         end
       end
       outputs
     end
 
-    def get_tests
+    def tests
       tests = []
-      headers = get_test_headers
-      index = 1
-      while (row = get_test_row(index))
-        inputs = get_inputs(row, headers)
-        outputs = get_outputs(row, headers)
-        tests << Sprat::Test.new(index, inputs, outputs)
-        index += 1
+      if idx = index("tests")
+        headers = @sheet.row(idx).map(&:downcase)
+        test_id = 1
+        while (row = @sheet.row(idx + test_id))
+          tests << Sprat::Test.new(test_id, inputs(row, headers), outputs(row, headers))
+          test_id += 1
+        end
       end
       tests
     end
 
-    def get_test_headers
-      headers = Array.new
-      sheet = get_worksheet
-      offset = get_config_row('tests')
-      i = SKIP_COLUMNS + 1
-      while i <= sheet.num_cols  do
-        headers << sheet[offset, i]
-        i +=1
-      end
-      headers
-    end
-
-    def get_test_row(index)
-      sheet = get_worksheet
-      offset = get_config_row('tests')
-      test_row = offset + index
-
-      if test_row > sheet.num_rows
-        return nil
-      end
-
-      ret = Array.new
-      i = 1
-      while i <= sheet.num_cols  do
-        ret << sheet[test_row, i]
-        i +=1
-      end
-      ret
-    end
-
-    def get_config(name)
-      sheet = get_worksheet
-      tests_start_row = get_config_row('tests')
-      i = 1
-      while i <= tests_start_row  do
-        label = sheet[i,1]
-        if label.downcase == name.downcase
-          return sheet[i,2]
-        end
-        i +=1
-      end
-      nil
-    end
-
-    def set_config(name, value)
-      sheet = get_worksheet
-      i = 1
-      while i <= sheet.num_rows  do
-        label = sheet[i,1]
-        if label.downcase == name.downcase
-          sheet[i,2] = value
-          return
-        end
-        i +=1
+    def index(name)
+      idx = 1
+      while idx <= @sheet.num_rows do
+        return idx if @sheet.get(idx,1).downcase == name
+        idx +=1
       end
     end
 
-    def get_config_row(name)
-      sheet = get_worksheet
-      i = 1
-      while i <= sheet.num_rows  do
-        label = sheet[i,1]
-        if label.downcase == name.downcase
-          return i
-        end
-        i +=1
-      end
-      nil
-    end
-
-    def update_status(msg, item = 'status')
-      ws = get_worksheet
-      set_config(item, msg)
-      save(ws)
-    end
-
-    def set_cell(ws, row, col, val)
-      current_val = ws[row, col]
-      if current_val != val
-        ws[row, col] = val
+    def get(name, default = nil)
+      if idx = index(name)
+        @sheet.get(idx, 2)
+      else
+        default
       end
     end
+
+    def get_array(name)
+      if values = get(name)
+        values.split(',').map(&:strip).map(&:downcase)
+      end
+    end
+
+    def set(name, value)
+      if idx = index(name)
+        @sheet.set(idx, 2, value)
+      end
+    end
+
 
     def reset_spreadsheet()
-
-      puts "Resetting worksheet '#{@worksheet}'..."
-
-      ws = get_worksheet
-
-      offset = get_config_row('tests')
-
-      offset += 1
-
-      while offset <= ws.num_rows do
-        set_cell(ws, offset, 2, "")
-        set_cell(ws, offset, 3, "")
+      offset = index('tests') + 1
+      while offset <= @sheet.num_rows do
+        @sheet.set(offset, 2, "")
+        @sheet.set(offset, 3, "")
         offset += 1
-
         if (offset % BATCH_SIZE) == 0
-          puts "offset now #{offset}"
-          save(ws)
+          @sheet.save
         end
-
       end
-
-      save(ws)
-
+      @sheet.save
     end
 
     def update_spreadsheet(test_results)
-
-      puts "Updating worksheet '#{@worksheet}' with " + test_results.length.to_s + " test results.."
-
-      ws = get_worksheet
-
-      offset = get_config_row('tests')
-
-      # NB test IDs start from 1
+      offset = index('tests')
       test_results.each do |result|
-
         row = result.id
-        set_cell(ws, offset + row, 2, result.result)
-        set_cell(ws, offset + row, 3, result.reason)
-
+        @sheet.set(offset + row, 2, result.result)
+        @sheet.set(offset + row, 3, result.reason)
         if (row % BATCH_SIZE) == 0
-          puts "results now #{row}"
-          save(ws)
+          @sheet.save
         end
-
       end
-
-      save(ws)
-
+      @sheet.save
     end
 
-    def save(ws)
-      puts "saving.."
-      retries = 0
-      while retries < 3
-        puts "retrying.." unless retries == 0
-        begin
-          ws.save
-          puts "saved.."
-          return
-        rescue => e
-          puts "exception while saving : #{e.message}"
-        end
-        retries += 1
-      end
-      raise RuntimeError.new("Save failed after retries")
-    end
 
     def save_job(job)
-      update_status(job.status, "Status")
-      update_status(job.started_at.to_s, "Started At")
-      update_status(job.finished_at.to_s, "Finished At")
+      set("status", job.status)
+      set("started at", job.started_at.to_s)
+      set("finished at", job.finished_at.to_s)
+      @sheet.save
     end
 
     def save_results(results = [])
       results.empty? ? reset_spreadsheet : update_spreadsheet(results)
     end
-
 
   end
 end
