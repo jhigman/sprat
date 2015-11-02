@@ -45,19 +45,19 @@ class SourceTest < Minitest::Test
 
     source = Sprat::Source.new(sheet)
 
-    assert_equal ['one', 'two'], source.get_array("parameters")
+    assert_equal ['One', 'Two'], source.get_array("parameters")
     assert_equal ['comment'], source.get_array("ignore")
 
   end
 
-  def test_tests
+  def test_inputs_use_case_of_parameter_list
 
     rows = [
       ['',''],
       ['parameters', 'one, two'],
       ['ignore', 'comment'],
       ['',''],
-      ['Tests','Result','Reason','comment','one','two','first','second'],
+      ['Tests','Result','Reason','comment','one','TWO','first','second'],
       ['','','','checking for edge condition','abc','def','',''],
       ['','','','another alpha test','xyz','stu','',''],
     ]

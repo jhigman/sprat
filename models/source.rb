@@ -16,9 +16,10 @@ module Sprat
 
     def inputs(row, headers)
       inputs = {}
+      headers.map!(&:downcase)
       parameters = get_array("parameters")
       parameters.each do |parameter|
-        if idx = headers.find_index(parameter)
+        if idx = headers.find_index(parameter.downcase)
           inputs[parameter] = row[idx]
         end
       end
@@ -27,9 +28,9 @@ module Sprat
 
     def outputs(row, headers)
       outputs = []
-      ignore_names = ['tests','result','reason'] + get_array('ignore') + get_array('parameters')
+      ignore_names = (['tests','result','reason'] + get_array('ignore') + get_array('parameters')).map(&:downcase)
       headers.each_with_index do |header, idx|
-        unless ignore_names.include?(header)
+        unless ignore_names.include?(header.downcase)
           outputs << { 'label' => header, 'path' => get(header, header), 'value' => row[idx] }
         end
       end
@@ -39,7 +40,7 @@ module Sprat
     def tests
       tests = []
       if idx = index("tests")
-        headers = @sheet.row(idx).map(&:downcase)
+        headers = @sheet.row(idx)
         test_id = 1
         while (row = @sheet.row(idx + test_id))
           tests << Sprat::Test.new(test_id, inputs(row, headers), outputs(row, headers))
@@ -52,7 +53,7 @@ module Sprat
     def index(name)
       idx = 1
       while idx <= @sheet.num_rows do
-        return idx if @sheet.get(idx,1).downcase == name
+        return idx if @sheet.get(idx,1).downcase == name.downcase
         idx +=1
       end
     end
@@ -67,7 +68,7 @@ module Sprat
 
     def get_array(name)
       if values = get(name)
-        values.split(',').map(&:strip).map(&:downcase)
+        values.split(',').map(&:strip)
       end
     end
 

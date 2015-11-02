@@ -41,7 +41,7 @@ post '/jobs' do
   if request["queue"]
     Resque.enqueue(Sprat::Job, job.id)
   else
-    Sprat::JobExecutor.new(settings.store).execute(job)
+    job.exec
   end
 
   redirect "/jobs/#{job.id}"
