@@ -26,7 +26,7 @@ module Sprat
           response = JSON.parse(json)
 
           matcher = ExpectationsMatcher.create(response)
-          msgs << matcher.match(@outputs)
+          msgs = matcher.match(@outputs)
 
         end
 

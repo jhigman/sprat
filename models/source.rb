@@ -16,10 +16,9 @@ module Sprat
 
     def inputs(row, headers)
       inputs = {}
-      headers.map!(&:downcase)
       parameters = get_array("parameters")
       parameters.each do |parameter|
-        if idx = headers.find_index(parameter.downcase)
+        if idx = headers.map(&:downcase).find_index(parameter.downcase)
           inputs[parameter] = row[idx]
         end
       end
