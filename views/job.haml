@@ -10,6 +10,8 @@
     %dd= "#{@job.worksheet}"
     %dt Created
     %dd= @job.created_at || " "
+    %dt Tests
+    %dd= @results.size
     %dt Started
     %dd= @job.started_at || " "
     %dt Finished
