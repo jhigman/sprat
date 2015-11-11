@@ -18,10 +18,6 @@ gem 'resque'
 gem 'capistrano'
 gem 'capistrano-bundler'
 
-# these are needed too?
-# gem 'rubygems'
-# gem 'csv'
-
 group :development do
   gem 'minitest'
   gem 'byebug'

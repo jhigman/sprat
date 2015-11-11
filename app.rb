@@ -1,17 +1,20 @@
-require "rubygems"
+require 'rubygems'
 require 'sinatra'
 require 'sinatra/config_file'
-require "yaml"
+require 'yaml'
 require 'haml'
 require 'google/api_client'
-require "google_drive"
-require "csv"
-require "json"
-require "jsonpath"
+require 'google_drive'
+require 'csv'
+require 'json'
+require 'jsonpath'
 require 'rest_client'
 require 'redis'
 require 'resque'
-require "byebug"
+
+configure(:development) do
+  require 'byebug'
+end
 
 require_relative 'models/init'
 require_relative 'routes/init'
