@@ -3,23 +3,24 @@
 
   %dl.dl-horizontal
     %dt Host
-    %dd= @job.host || " "
+    %dd= @job.host
     %dt Spreadsheet
     %dd= @job.spreadsheet
     %dt Worksheet
     %dd= "#{@job.worksheet}"
     %dt Created
-    %dd= @job.created_at || " "
+    %dd= @job.created_at
+    %dt Started
+    %dd= @job.started_at
+    %dt Time to complete
+    %dd= @job.time_to_complete
     %dt Tests
     %dd= @results.size
-    %dt Started
-    %dd= @job.started_at || " "
-    %dt Finished
-    %dd= @job.finished_at || " "
     %dt Status
     %dd= "#{@job.status}"
-    %dt Reason
-    %dd= "#{@job.reason}"
+    - if @job.reason
+      %dt Reason
+      %dd= "#{@job.reason}"
 
   %span.pull-right
     %form{ :action => "/jobs/new", :method => "get"}
@@ -47,19 +48,28 @@
 
 - else
   %h2= "New Job"
+
+  %br
+  %br
+
   %form{ :action => "/jobs", :method => "post"}
-    %fieldset
-      %label{:for => "host"} Host
-      %input{:type => "text", :name => "host", :class => "text", :value => @host}
-      %label{:for => "spreadsheet"} Spreadsheet Name
-      %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
-      %label{:for => "worksheet"} Worksheet Name
-      %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
-      %label{:for => "local"} Only save results locally
-      %input{:type => "checkbox", :name => "local", :class => "checkbox", :checked => true}
-      %p
-      %p
+
+    %dl.dl-horizontal
+      %dt Host
+      %dd
+        %input{:type => "text", :name => "host", :class => "text", :value => @host}
+      %dt Spreadsheet
+      %dd
+        %input{:type => "text", :name => "spreadsheet", :class => "text", :value => @spreadsheet}
+      %dt Worksheet
+      %dd
+        %input{:type => "text", :name => "worksheet", :class => "text", :value => @worksheet}
+      %dt Only save locally
+      %dd
+        %input{:type => "checkbox", :name => "local", :class => "checkbox", :checked => true}
+      %dt
+      %dd
+        %br
         %input{:type => "submit", :name => "queue", :value => "Queue", :class => "btn btn-primary"}
         %input{:type => "submit", :name => "run", :value => "Run Now", :class => "btn btn-primary", :autofocus => true}
-
 

@@ -22,6 +22,13 @@ module Sprat
       @local.to_s != "0"
     end
 
+    def time_to_complete
+      if @started_at && @finished_at
+        diff = Time.parse(@finished_at) - Time.parse(@started_at)
+        diff.to_i.to_s + " secs"
+      end
+    end
+
     def get_failures(results)
       results.select{|result| result.result != 'PASS'}
     end

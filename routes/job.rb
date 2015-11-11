@@ -7,6 +7,21 @@ end
 
 get '/jobs' do
   @jobs = settings.store.load_jobs
+  if request["host"]
+    @jobs.select!{|job| job.host == request["host"]}
+  end
+  if request["spreadsheet"]
+    @jobs.select!{|job| job.spreadsheet == request["spreadsheet"]}
+  end
+  if request["summary"]
+    summary_jobs = []
+    @jobs.each do |job|
+      if !summary_jobs.any?{|selected_job| selected_job.worksheet == job.worksheet}
+        summary_jobs << job
+      end
+    end
+    @jobs = summary_jobs
+  end
   haml :jobs
 end
 

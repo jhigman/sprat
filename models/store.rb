@@ -26,7 +26,7 @@ module Sprat
       Sprat::Job.from_json(json) unless json.nil?
     end
 
-    def load_jobs(start = max_id, number = 200)
+    def load_jobs(start = max_id, number = 1000)
       start.downto([start-number+1, 1].max).map{|id| load_job(id)}
     end
 

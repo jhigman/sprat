@@ -13,6 +13,7 @@
   %thead
     %th ID
     %th Created
+    %th Time to complete
     %th Host
     %th Spreadsheet
     %th Worksheet
@@ -22,8 +23,11 @@
     %tr
       %td= job.id
       %td= job.created_at
-      %td= job.host
-      %td= job.spreadsheet
+      %td= job.time_to_complete
+      %td
+        %a{title: "#{job.host}", href: "/jobs?summary=true&host=#{job.host}"} #{job.host}
+      %td
+        %a{title: "#{job.spreadsheet}", href: "/jobs?summary=true&spreadsheet=#{job.spreadsheet}"} #{job.spreadsheet}
       %td= job.worksheet
       %td
         %a{title: "#{job.status}", href: "/jobs/#{job.id}"} #{job.status}
