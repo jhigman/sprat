@@ -1,13 +1,8 @@
-require 'minitest/autorun'
-require 'rspec/mocks'
-
 require_relative '../../app.rb'
 
-class ExpectationsMatcherJsonTest < Minitest::Test
+describe Sprat::ExpectationsMatcherJson do
 
-  include RSpec::Mocks::ExampleMethods
-
-  def test_matches_integer_and_string
+  it "should match integer with string number" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => '23', 'label' => 'Item1'}
@@ -18,13 +13,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_integer_strings
+  it "should match string numbers" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => '23', 'label' => 'Item1'}
@@ -35,13 +28,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_decimal_numbers
+  it "should match decimal numbers" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => 6.78, 'label' => 'Item1'}
@@ -52,14 +43,12 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
 
-  def test_matches_string_and_decimal
+  it "should match decimal and string decimal" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => '6.78', 'label' => 'Item1'}
@@ -70,14 +59,12 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
 
-  def test_matches_strings
+  it "should match strings" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => 'hello', 'label' => 'Item1'},
@@ -90,13 +77,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_strings_ignoring_whitespace
+  it "should match strings ignoring whitespace" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => 'hello, matey', 'label' => 'Item1'},
@@ -107,13 +92,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_arrays
+  it "should match arrays" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => 'hello', 'label' => 'Item1'},
@@ -128,13 +111,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_expected_dates_in_correct_formats
+  it "should match dates in expected formats" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "2014-01-24", 'label' => 'Item1'}
@@ -145,50 +126,37 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
-
+    expect(matcher.match(outputs)).to eql([])
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "24/01/2014", 'label' => 'Item1'}
     ]
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
-
+    expect(matcher.match(outputs)).to eql([])
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "2014-01-23", 'label' => 'Item1'}
     ]
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["Expected 2014-01-23 for 'Item1', but found 2014-01-24"], msgs
+    expect(matcher.match(outputs)).to eql(["Expected 2014-01-23 for 'Item1', but found 2014-01-24"])
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "24 Jan 2014", 'label' => 'Item1'}
     ]
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["Expected 24 Jan 2014 for 'Item1', but found 2014-01-24"], msgs
-
+    expect(matcher.match(outputs)).to eql(["Expected 24 Jan 2014 for 'Item1', but found 2014-01-24"])
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "2014-01-24T12:34", 'label' => 'Item1'}
     ]
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["Expected 2014-01-24T12:34 for 'Item1', but found 2014-01-24"], msgs
+    expect(matcher.match(outputs)).to eql(["Expected 2014-01-24T12:34 for 'Item1', but found 2014-01-24"])
 
 
   end
 
 
-  def test_matches_dates_ignoring_times
+  it "should match dates ignoring times" do
 
     outputs = [
       { 'path' => '$.[0].item', 'value' => "24/01/2014", 'label' => 'Item1'}
@@ -199,13 +167,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_comma_in_jsonpath_fails
+  it "should demonstrate issue with commas in keys" do
 
     outputs = [
       { 'path' => "$.['one, two']", 'value' => "some value", 'label' => 'Item1'}
@@ -215,16 +181,13 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
     # really we want to get "some value" returned, but comma is reserved for ranges in jsonpath
-    assert_equal ["Expected some value for 'Item1', but found nothing"], msgs
-
+    expect(matcher.match(outputs)).to eql(["Expected some value for 'Item1', but found nothing"])
 
   end
 
 
-  def test_matches_simple_array
+  it "should match simple arrays" do
 
     outputs = [
       { 'path' => "$.[0]", 'value' => "one", 'label' => 'Item1'},
@@ -235,13 +198,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_simple_hash
+  it "should match simple hashes" do
 
     outputs = [
       { 'path' => "$.first", 'value' => "one", 'label' => 'Item1'},
@@ -252,13 +213,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_paths_with_root
+  it "should match paths with root" do
 
     outputs = [
       { 'path' => '$.root[0].name', 'value' => "one", 'label' => 'Item1'},
@@ -271,14 +230,12 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
 
   end
 
-  def test_matches_paths_without_root
+  it "should match paths without root" do
 
     outputs = [
       { 'path' => '$.[0].name', 'value' => 'one', 'label' => 'Name1'}
@@ -290,13 +247,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_matches_paths_with_spaces
+  it "should match paths with spaces" do
 
     outputs = [
       { 'path' => '$.["name second"]', 'value' => 'two', 'label' => 'Name1'}
@@ -306,13 +261,11 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal [], msgs
+    expect(matcher.match(outputs)).to eql([])
 
   end
 
-  def test_handles_path_not_found_despite_jsonpath_bug
+  it "should handle path not found despite jsonpath bug" do
 
     outputs = [
       { 'path' => '$.[99].name', 'value' => 'one', 'label' => 'Name1'}
@@ -324,12 +277,10 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["Expected one for 'Name1', but found nothing"], msgs
+    expect(matcher.match(outputs)).to eql(["Expected one for 'Name1', but found nothing"])
   end
 
-  def test_nested_hash_value_is_case_sensitive
+  it "should match nested hash with case sensitivity" do
 
     outputs = [
       { 'path' => '$.root[0].name', 'value' => 'one', 'label' => 'Name1'},
@@ -342,9 +293,7 @@ class ExpectationsMatcherJsonTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherJson.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["Expected TWO for 'Name2', but found two"], msgs
+    expect(matcher.match(outputs)).to eql(["Expected TWO for 'Name2', but found two"])
 
   end
 

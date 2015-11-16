@@ -1,38 +1,36 @@
-require 'minitest/autorun'
-
 require_relative '../../app.rb'
 
-class ExpectationsMatcherTest < Minitest::Test
+describe Sprat::ExpectationsMatcher do
 
-  def test_create_array_matcher
+  it "should create an array matcher" do
 
     response = []
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherArray, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherArray)
 
     response = ['one', 'two']
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherArray, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherArray)
 
     response = [1, 2, 3.5]
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherArray, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherArray)
 
   end
 
-  def test_create_json_matcher
+  it "should create a json matcher" do
 
     response = {}
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherJson, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherJson)
 
     response = {'one' => 'a string', 'two' => 'another string'}
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherJson, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherJson)
 
     response = {'one' => ['string 1', 'string 2']}
     matcher = Sprat::ExpectationsMatcher.create(response)
-    assert_equal Sprat::ExpectationsMatcherJson, matcher.class
+    expect(matcher.class).to eql(Sprat::ExpectationsMatcherJson)
 
   end
 

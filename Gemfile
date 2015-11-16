@@ -23,6 +23,7 @@ group :development do
   gem 'byebug'
   gem 'shotgun'
   gem 'thin'
+  gem 'rspec'
   gem 'rspec-mocks'
 end
 

@@ -1,13 +1,8 @@
-require 'minitest/autorun'
-require 'rspec/mocks'
-
 require_relative '../../app.rb'
 
-class ExpectationsMatcherArrayTest < Minitest::Test
+describe Sprat::ExpectationsMatcherArray do
 
-  include RSpec::Mocks::ExampleMethods
-
-  def test_identifies_extras
+  it "should identify extra items in response" do
 
     outputs = [
       { 'path' => 'one', 'value' => '', 'label' => 'one'},
@@ -19,13 +14,11 @@ class ExpectationsMatcherArrayTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherArray.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["four,five should not have been found"], msgs
+    expect(matcher.match(outputs)).to eql(["four,five should not have been found"])
 
   end
 
-  def test_is_case_sensitive
+  it "should be case sensitive" do
 
     outputs = [
       { 'path' => 'One', 'value' => 'Y', 'label' => 'one'}
@@ -35,13 +28,11 @@ class ExpectationsMatcherArrayTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherArray.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["One not found", "ONE should not have been found"], msgs
+    expect(matcher.match(outputs)).to eql(["One not found", "ONE should not have been found"])
 
   end
 
-  def test_identifies_empty_array
+  it "test_identifies_empty_array" do
 
     outputs = [
       { 'path' => 'one', 'value' => 'Y', 'label' => 'one'}
@@ -51,9 +42,7 @@ class ExpectationsMatcherArrayTest < Minitest::Test
 
     matcher = Sprat::ExpectationsMatcherArray.new(response)
 
-    msgs = matcher.match(outputs)
-
-    assert_equal ["No results returned"], msgs
+    expect(matcher.match(outputs)).to eql(["No results returned"])
 
   end
 

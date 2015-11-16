@@ -13,6 +13,7 @@ require 'redis'
 require 'resque'
 
 configure(:development) do
+  require 'rspec'
   require 'byebug'
 end
 

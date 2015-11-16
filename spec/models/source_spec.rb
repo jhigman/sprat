@@ -1,11 +1,6 @@
-require 'minitest/autorun'
-require 'rspec/mocks'
-
 require_relative '../../app.rb'
 
-class SourceTest < Minitest::Test
-
-  include RSpec::Mocks::ExampleMethods
+describe Sprat::Source do
 
   class DummySheet
 
@@ -31,7 +26,7 @@ class SourceTest < Minitest::Test
 
   end
 
-  def test_config
+  it "should extract config" do
 
     rows = [
       ['',''],
@@ -45,12 +40,12 @@ class SourceTest < Minitest::Test
 
     source = Sprat::Source.new(sheet)
 
-    assert_equal ['One', 'Two'], source.get_array("parameters")
-    assert_equal ['comment'], source.get_array("ignore")
+    expect(source.get_array("parameters")).to eql(['One', 'Two'])
+    expect(source.get_array("ignore")).to eql(['comment'])
 
   end
 
-  def test_inputs_use_case_of_parameter_list
+  it "should use case of parameter list for inputs" do
 
     rows = [
       ['',''],
@@ -65,14 +60,15 @@ class SourceTest < Minitest::Test
     sheet = DummySheet.new(rows)
 
     source = Sprat::Source.new(sheet)
+    expect(source.tests.size).to eql(2)
 
-    assert_equal 2, source.tests.size
     test = source.tests[0]
-    assert_equal "abc", test.inputs["one"]
-    assert_equal "def", test.inputs["two"]
+    expect(test.inputs["one"]).to eql("abc")
+    expect(test.inputs["two"]).to eql("def")
+
     test = source.tests[1]
-    assert_equal "xyz", test.inputs["one"]
-    assert_equal "stu", test.inputs["two"]
+    expect(test.inputs["one"]).to eql("xyz")
+    expect(test.inputs["two"]).to eql("stu")
 
   end
 
