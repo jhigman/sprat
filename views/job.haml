@@ -27,7 +27,7 @@
       %input{:type => "hidden", :name => "host", :class => "text", :value => @job.host}
       %input{:type => "hidden", :name => "spreadsheet", :class => "text", :value => @job.spreadsheet}
       %input{:type => "hidden", :name => "worksheet", :class => "text", :value => @job.worksheet}
-      %input{:type => "submit", :name => "rerun", :value => "Run Again", :class => "btn btn-primary", :autofocus => true}
+      %input{:type => "submit", :name => "rerun", :value => "Edit job", :class => "btn btn-primary", :autofocus => true}
 
   %table.table.table-bordered.table-hover
     %thead
@@ -70,6 +70,5 @@
       %dt
       %dd
         %br
-        %input{:type => "submit", :name => "queue", :value => "Queue", :class => "btn btn-primary"}
-        %input{:type => "submit", :name => "run", :value => "Run Now", :class => "btn btn-primary", :autofocus => true}
+        %input{:type => "submit", :name => "run", :value => "Run", :class => "btn btn-primary", :autofocus => true}
 

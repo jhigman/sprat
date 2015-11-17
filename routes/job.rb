@@ -51,6 +51,7 @@ post '/jobs/summary' do
         new_job.worksheet = job.worksheet
         new_job.host = job.host
         new_job.local = job.local
+        new_job.status = "Scheduled"
         new_job.created_at = Time.now
         new_job = settings.store.save_job(new_job)
         Resque.enqueue(Sprat::Job, new_job.id)
@@ -85,15 +86,12 @@ post '/jobs' do
   job.worksheet = worksheet
   job.host = host
   job.local = local
+  job.status = "Scheduled"
   job.created_at = Time.now
 
   job = settings.store.save_job(job)
 
-  if request["queue"]
-    Resque.enqueue(Sprat::Job, job.id)
-  else
-    job.exec
-  end
+  Resque.enqueue(Sprat::Job, job.id)
 
   redirect "/jobs/#{job.id}"
 
