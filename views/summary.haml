@@ -1,0 +1,36 @@
+%h2= "Summary for #{@host} #{@spreadsheet}"
+
+%form{ :action => "/jobs/summary", :method => "post"}
+
+  %input{:type => "hidden",  :name => "host", :value => "#{@host}"}
+  %input{:type => "hidden",  :name => "spreadsheet", :value => "#{@spreadsheet}"}
+
+  %span.pull-right
+    .btn-group.buttons
+      %input{:type => "submit", :name => "run", :value => "Queue Selected", :class => "btn btn-primary", :autofocus => true}
+
+
+
+  %table.table.table-bordered.table-hover
+    %thead
+      %th ID
+      %th Created
+      %th Time to complete
+      %th Host
+      %th Spreadsheet
+      %th Worksheet
+      %th Status
+      %th.center Select
+    %tbody
+    - @jobs.each do |job|
+      %tr
+        %td= job.id
+        %td= job.created_at
+        %td= job.time_to_complete
+        %td= job.host
+        %td= job.spreadsheet
+        %td= job.worksheet
+        %td
+          %a{title: "#{job.status}", href: "/jobs/#{job.id}"} #{job.status}
+        %td.center
+          %input{:type => "checkbox", :name => "job_ids[#{job.id}]", :class => "text", :value => false}

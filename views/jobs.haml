@@ -25,9 +25,9 @@
       %td= job.created_at
       %td= job.time_to_complete
       %td
-        %a{title: "#{job.host}", href: "/jobs?summary=true&host=#{job.host}"} #{job.host}
+        %a{title: "Show summary for #{job.host}", href: "/jobs/summary?host=#{job.host}"} #{job.host}
       %td
-        %a{title: "#{job.spreadsheet}", href: "/jobs?summary=true&spreadsheet=#{job.spreadsheet}"} #{job.spreadsheet}
+        %a{title: "Show summary for #{job.spreadsheet}", href: "/jobs/summary?spreadsheet=#{job.spreadsheet}"} #{job.spreadsheet}
       %td= job.worksheet
       %td
         %a{title: "#{job.status}", href: "/jobs/#{job.id}"} #{job.status}
