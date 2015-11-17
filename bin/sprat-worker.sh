@@ -1,0 +1,1 @@
+bundle exec rake resque:work TERM_CHILD=1 QUEUE=test_jobs

@@ -26,7 +26,7 @@ get '/jobs/summary' do
       summary_jobs << job
     end
   end
-  @jobs = summary_jobs
+  @jobs = summary_jobs.sort_by(&:worksheet)
   haml :summary
 end
 
