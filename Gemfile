@@ -12,7 +12,6 @@ gem 'jsonpath', github: 'jhigman/jsonpath'
 gem 'haml'
 gem 'google_api'
 gem 'google_drive', github: 'gimite/google-drive-ruby'
-
 gem 'rest-client'
 gem 'resque'
 gem 'capistrano'

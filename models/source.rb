@@ -14,9 +14,8 @@ module Sprat
       Sprat::API.new(host, api_url, api_key)
     end
 
-    def inputs(row, headers)
+    def inputs(row, headers, parameters)
       inputs = {}
-      parameters = get_array("parameters")
       parameters.each do |parameter|
         if idx = headers.map(&:downcase).find_index(parameter.downcase)
           inputs[parameter] = row[idx]
@@ -25,15 +24,22 @@ module Sprat
       inputs
     end
 
-    def outputs(row, headers)
+    def outputs(row, headers, ignore_names, header_paths)
       outputs = []
-      ignore_names = (['tests','result','reason'] + get_array('ignore') + get_array('parameters')).map(&:downcase)
       headers.each_with_index do |header, idx|
         unless ignore_names.include?(header.downcase)
-          outputs << { 'label' => header, 'path' => get(header, header), 'value' => row[idx] }
+          outputs << { 'label' => header, 'path' => header_paths[header], 'value' => row[idx] }
         end
       end
       outputs
+    end
+
+    def paths(headers)
+      header_paths = {}
+      headers.each do |header|
+        header_paths[header] = get(header, header)
+      end
+      header_paths
     end
 
     def tests
@@ -41,8 +47,11 @@ module Sprat
       if idx = index("tests")
         headers = @sheet.row(idx)
         test_id = 1
+        parameters = get_array("parameters")
+        ignore_names = (['tests','result','reason'] + get_array('ignore') + parameters).map(&:downcase)
+        header_paths = paths(headers)
         while (row = @sheet.row(idx + test_id))
-          tests << Sprat::Test.new(test_id, inputs(row, headers), outputs(row, headers))
+          tests << Sprat::Test.new(test_id, inputs(row, headers, parameters), outputs(row, headers, ignore_names, header_paths))
           test_id += 1
         end
       end
