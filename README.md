@@ -5,20 +5,17 @@ Sprat : Spreadsheet API Test Runner
 ===================================
 
 Write tests for an API in a spreadsheet. Then run the spreadsheet.
-------------------------------------------------------------------  
+------------------------------------------------------------------
 
 The spreadsheet is in Google Drive, and looks like this:
 
 
-![Sprat MD5 Test](images/sprat-md5.png)  
+![Sprat MD5 Test](images/sprat-md5.png)
 
 
 
-The tests are run from the Test Runner menu, and the spreadsheet updated with the results. 
+The tests are run from the Test Runner menu, and the spreadsheet updated with the results.
 
-Try the [demo spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0AnNso1xhxP7xdEpmb3prMWdmMEF6Ti05c29TT3R4Q0E#gid=0) (the script will prompt for permissions when invoking the Test Runner for the first time)
-
-Tests can also be queued, and results viewed, from the [Test Runner UI](http://serene-shore-1334.herokuapp.com/jobs).
 
 
 Running the app
@@ -33,14 +30,6 @@ See the homepage:
 
 	http://localhost:9292
 
-
-Accessing Google Spreadsheets
------------------------------
-
-Set some environment variables to give access to Google Spreadsheets:
-
-	GOOGLE_DRIVE_USERNAME=username for google drive spreadsheets account
-	GOOGLE_DRIVE_PASSWORD=password for google drive spreadsheets account
 
 
 Running background jobs
@@ -65,7 +54,7 @@ To use a RedisCloud instance, set this environment variable:
 Script to run tests from a Google Drive Spreadsheet
 ---------------------------------------------------
 
-There's a library of Google App Script helper functions published by the Sprat Google account. 
+There's a library of Google App Script helper functions published by the Sprat Google account.
 
 The Project Key for the published library is : *MNMuL6AHdxrq9UX44qx2DMKxz0Q3oDASm*
 
@@ -76,22 +65,22 @@ Then, add this code to a new script, after which a "Test Runner" menu option wil
 
     function onOpen() {
       var ss = SpreadsheetApp.getActiveSpreadsheet();
-      var menuEntries = [ {name: "Run tests", functionName: "runThisSheet"} , {name: "Schedule tests", functionName: "scheduleThisSheet"} ];    
-      ss.addMenu("Test Runner", menuEntries);    
-      setTestRunnerProperties();    
-    }    
-    
+      var menuEntries = [ {name: "Run tests", functionName: "runThisSheet"} , {name: "Schedule tests", functionName: "scheduleThisSheet"} ];
+      ss.addMenu("Test Runner", menuEntries);
+      setTestRunnerProperties();
+    }
+
     function setTestRunnerProperties() {
-      ScriptProperties.setProperty("TestRunnerURL", "http://serene-shore-1334.herokuapp.com/jobs");    
-      ScriptProperties.setProperty("TestRunnerAuth", "");    
-    }    
-    
+      ScriptProperties.setProperty("TestRunnerURL", "http://serene-shore-1334.herokuapp.com/jobs");
+      ScriptProperties.setProperty("TestRunnerAuth", "");
+    }
+
     function runThisSheet() {
       testRunnerURL = ScriptProperties.getProperty("TestRunnerURL");
       testRunnerAuth = ScriptProperties.getProperty("TestRunnerAuth");
       runTestJob(testRunnerURL, testRunnerAuth);
     }
-    
+
     function scheduleThisSheet() {
       testRunnerURL = ScriptProperties.getProperty("TestRunnerURL");
       testRunnerAuth = ScriptProperties.getProperty("TestRunnerAuth");
