@@ -31,6 +31,17 @@ See the homepage:
 	http://localhost:9292
 
 
+Accessing Google Drive
+----------------------
+
+Google Drive uses OAuth 2.0 for access permissions - you'll need to configure credentials in the config/config.yml file (use config.yml.example as a template).
+
+The google_client_email is the email address for a service account (a server-side only account associated with your usual Google account).
+
+The google_p12_file is a private key file that is generated when you set up the service account.
+
+More details on setting up the service account are at https://console.developers.google.com/
+
 
 Running background jobs
 -----------------------
