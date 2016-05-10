@@ -34,7 +34,7 @@ module Sprat
     end
 
     def set_status(results)
-      @status = get_failures(results).empty? ?  "PASS" : "FAIL (" + get_failures(results).size.to_s + " errors)"
+      @status = get_failures(results).empty? ?  "PASS" : "FAIL (#{get_failures(results).size} errors)"
     end
 
 
@@ -57,18 +57,19 @@ module Sprat
 
       begin
         tests.each do |test|
-          results << test.exec(api)
+          result = test.exec(api)
+          store.save_result(self, result)
+          results << result
         end
         set_status(results)
       rescue => e
-        @status = "FAIL (" + e.message + ")"
+        @status = "FAIL (#{e.message})"
         @reason = e.message + e.backtrace.inspect
       end
 
       @finished_at = Time.now
 
       store.save_job(self)
-      store.save_results(self, results)
 
       unless local?
         source.save_job(self)

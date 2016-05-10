@@ -14,7 +14,7 @@ describe Sprat::Job do
     store = double(:store)
     expect(store).to receive(:save_job)
     expect(store).to receive(:save_job)
-    expect(store).to receive(:save_results)
+    expect(store).to receive(:save_result)
 
     source = double(:source)
     expect(source).to receive(:get_api).with('google.com') {api}

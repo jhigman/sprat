@@ -30,10 +30,8 @@ module Sprat
       start.downto([start-number+1, 1].max).map{|id| load_job(id)}
     end
 
-    def save_results(job, results)
-      results.each do |result|
-        @redis.lpush("job:#{job.id}:results", result.to_json)
-      end
+    def save_result(job, result)
+      @redis.lpush("job:#{job.id}:results", result.to_json)
     end
 
     def load_results(job)

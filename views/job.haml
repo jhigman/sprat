@@ -7,20 +7,20 @@
     %dt Spreadsheet
     %dd= @job.spreadsheet
     %dt Worksheet
-    %dd= "#{@job.worksheet}"
+    %dd= @job.worksheet
     %dt Created
     %dd= @job.created_at
     %dt Started
-    %dd= @job.started_at
+    %dd= @job.started_at ? @job.started_at : 'n/a'
     %dt Time to complete
-    %dd= @job.time_to_complete
+    %dd= @job.time_to_complete ? @job.time_to_complete : 'n/a'
     %dt Tests
     %dd= @results.size
     %dt Status
-    %dd= "#{@job.status}"
+    %dd= @job.status
     - if @job.reason
       %dt Reason
-      %dd= "#{@job.reason}"
+      %dd= @job.reason
 
   %span.pull-right
     %form{ :action => "/jobs/new", :method => "get"}
