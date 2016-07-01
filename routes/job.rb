@@ -81,18 +81,29 @@ post '/jobs' do
   session[:host] = host
   session[:local] = local
 
-  job = Sprat::Job.new
-  job.spreadsheet = spreadsheet
-  job.worksheet = worksheet
-  job.host = host
-  job.local = local
-  job.status = "Scheduled"
-  job.created_at = Time.now
+  worksheets = []
 
-  job = settings.store.save_job(job)
+  if worksheet.empty?
+    book = Sprat::Book.new(spreadsheet, settings)
+    book.sheets.each do |sheet|
+      worksheets << sheet.title unless sheet.title == 'Summary'
+    end
+  else
+    worksheets << worksheet
+  end
 
-  Resque.enqueue(Sprat::Job, job.id)
+  worksheets.each do |name|
+    job = Sprat::Job.new
+    job.spreadsheet = spreadsheet
+    job.worksheet = name
+    job.host = host
+    job.local = local
+    job.status = "Scheduled"
+    job.created_at = Time.now
+    job = settings.store.save_job(job)
+    Resque.enqueue(Sprat::Job, job.id)
+  end
 
-  redirect "/jobs/#{job.id}"
+  redirect "/jobs"
 
 end
