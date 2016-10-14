@@ -16,6 +16,8 @@ gem 'rest-client'
 gem 'resque'
 gem 'capistrano'
 gem 'capistrano-bundler'
+gem 'data_mapper'
+gem 'dm-redis-adapter'
 
 group :development do
   gem 'minitest'

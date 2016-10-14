@@ -12,6 +12,8 @@
     %dd= @job.created_at
     %dt Started
     %dd= @job.started_at ? @job.started_at : 'n/a'
+    %dt Finished
+    %dd= @job.finished_at ? @job.finished_at : 'n/a'
     %dt Time to complete
     %dd= @job.time_to_complete ? @job.time_to_complete : 'n/a'
     %dt Tests

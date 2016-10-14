@@ -17,17 +17,9 @@ describe 'Sinatra App' do
   end
 
   it "should display jobs page" do
-
-    store = double(:store)
-    expect(store).to receive(:load_jobs) {[]}
-
-    app.set :store, store
-
     get '/jobs'
-
     expect(last_response.status).to eql(200)
     expect(last_response.body).to include("Jobs")
-
   end
 
 end

@@ -6,12 +6,12 @@ get '/jobs/new' do
 end
 
 get '/jobs' do
-  @jobs = settings.store.load_jobs
+  @jobs = Sprat::Job.all(:order => [:id.desc])
   haml :jobs
 end
 
 get '/jobs/summary' do
-  @jobs = settings.store.load_jobs
+  @jobs = Sprat::Job.all(:order => [:id.desc])
   if request["host"]
     @host = request["host"]
     @jobs.select!{|job| job.host == @host}
@@ -44,7 +44,7 @@ post '/jobs/summary' do
 
   if request[:job_ids]
     request[:job_ids].keys.each do |job_id|
-      job = settings.store.load_job(job_id)
+      job = Sprat::Job.get!(job_id)
       if job
         new_job = Sprat::Job.new
         new_job.spreadsheet = job.spreadsheet
@@ -53,7 +53,7 @@ post '/jobs/summary' do
         new_job.local = job.local
         new_job.status = "Scheduled"
         new_job.created_at = Time.now
-        new_job = settings.store.save_job(new_job)
+        new_job.save!
         Resque.enqueue(Sprat::Job, new_job.id)
       end
     end
@@ -64,8 +64,8 @@ end
 
 get '/jobs/:id' do
   id = params[:id]
-  @job = settings.store.load_job(id)
-  @results = settings.store.load_results(@job)
+  @job = Sprat::Job.get!(id)
+  @results = @job.results
   haml :job
 end
 
@@ -100,7 +100,8 @@ post '/jobs' do
     job.local = local
     job.status = "Scheduled"
     job.created_at = Time.now
-    job = settings.store.save_job(job)
+    job.save!
+
     Resque.enqueue(Sprat::Job, job.id)
   end
 
