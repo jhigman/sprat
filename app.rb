@@ -34,16 +34,13 @@ class SpratTestRunner < Sinatra::Application
 
   if ENV["REDISCLOUD_URL"]
     uri = URI.parse(ENV["REDISCLOUD_URL"])
-    redis = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-    DataMapper.setup :default, { adapter: 'redis', host: uri.host, port: uri.port, password: uri.password}
-  else
-    redis = Redis.new
-    DataMapper.setup :default, { adapter: 'redis' }
+    redis_host = uri.host
+    redis_port = uri.port
+    redis_password = uri.password
   end
 
-  Resque.redis = redis
-
-  set :store, Sprat::Store.new(redis)
+  DataMapper.setup :default, { adapter: 'redis', host: redis_host, port: redis_port, password: redis_password}
+  Resque.redis = Redis.new(host: redis_host, port: redis_port, password: redis_password)
 
   DataMapper.finalize
 
