@@ -13,9 +13,7 @@ module Sprat
 
     def exec(job)
 
-      job.status = 'Running'
-      job.started_at = Time.now
-      job.save!
+      job.update!(status: 'Running', started_at: Time.now)
 
       unless job.local
         @source.save_job(job)
@@ -30,14 +28,14 @@ module Sprat
           job.results << test.exec(api)
           job.save!
         end
-        job.status = status_message(job.results)
+        status = status_message(job.results)
+        reason = ''
       rescue => e
-        job.status = "FAIL (#{e.message})"
-        job.reason = e.message + e.backtrace.inspect
+        status = "FAIL (#{e.message})"
+        reason = e.message + e.backtrace.inspect
       end
 
-      job.finished_at = Time.now
-      job.save!
+      job.update!(status: status, reason: reason, finished_at: Time.now)
 
       unless job.local
         @source.save_job(job)

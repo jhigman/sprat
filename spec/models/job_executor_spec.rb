@@ -13,7 +13,7 @@ describe Sprat::JobExecutor do
     expect(source).to receive(:get_api).with('google.com').and_return(api)
     expect(source).to receive(:tests).and_return([test])
 
-    job = Sprat::Job.new(local: true, host: 'google.com')
+    job = Sprat::Job.create(local: true, host: 'google.com')
 
     Sprat::JobExecutor.new(source).exec(job)
 
@@ -38,7 +38,7 @@ describe Sprat::JobExecutor do
     expect(source).to receive(:get_api).with('google.com').and_return(api)
     expect(source).to receive(:tests).and_return([test1, test2])
 
-    job = Sprat::Job.new(local: true, host: 'google.com')
+    job = Sprat::Job.create(local: true, host: 'google.com')
     Sprat::JobExecutor.new(source).exec(job)
 
     expect(job.status).to eql('FAIL (1 errors)')
