@@ -74,7 +74,7 @@ post '/jobs' do
   spreadsheet = request["spreadsheet"]
   worksheet = request["worksheet"]
   host = request["host"]
-  local = request["local"] ? 1 : 0
+  local = request["local"] ? true : false
 
   session[:spreadsheet] = spreadsheet
   session[:worksheet] = worksheet
