@@ -2,5 +2,5 @@ require './app.rb'
 require 'resque/server'
 
 run Rack::URLMap.new \
-  "/"       => SpratTestRunner.new,
+  "/"       => SpratApp.new,
   "/resque" => Resque::Server.new

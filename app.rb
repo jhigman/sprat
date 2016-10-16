@@ -26,7 +26,7 @@ require_relative 'routes/init'
 config_file 'config/config.yml'
 
 
-class SpratTestRunner < Sinatra::Application
+class SpratApp < Sinatra::Application
 
   enable :sessions
 

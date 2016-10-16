@@ -1,7 +1,7 @@
 module Sprat
   class Book
 
-    def initialize(spreadsheet, settings = SpratTestRunner.settings)
+    def initialize(spreadsheet, settings = SpratApp.settings)
       @spreadsheet = spreadsheet
       @settings = settings
     end
