@@ -101,12 +101,11 @@ module Sprat
     end
 
     def update_spreadsheet(test_results)
-      offset = index('tests')
-      test_results.each do |result|
-        row = result.id
-        @sheet.set(offset + row, 2, result.result)
-        @sheet.set(offset + row, 3, result.reason)
-        if (row % BATCH_SIZE) == 0
+      offset = index('tests') + 1
+      test_results.each_with_index do |result, idx|
+        @sheet.set(offset + idx, 2, result.result)
+        @sheet.set(offset + idx, 3, result.reason)
+        if (idx % BATCH_SIZE) == 0
           @sheet.save
         end
       end

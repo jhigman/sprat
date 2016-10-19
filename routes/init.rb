@@ -5,6 +5,7 @@ get '/' do
 end
 
 post '/reset' do
-  SpratTestRunner.settings.store.clear
+  Sprat::Result.destroy
+  Sprat::Job.destroy
   redirect "/jobs"
 end

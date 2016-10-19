@@ -11,9 +11,11 @@
     %dt Created
     %dd= @job.created_at
     %dt Started
-    %dd= @job.started_at ? @job.started_at : 'n/a'
+    %dd= @job.started_at
+    %dt Finished
+    %dd= @job.finished_at
     %dt Time to complete
-    %dd= @job.time_to_complete ? @job.time_to_complete : 'n/a'
+    %dd= @job.time_to_complete
     %dt Tests
     %dd= @results.size
     %dt Status

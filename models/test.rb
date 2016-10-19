@@ -37,7 +37,7 @@ module Sprat
         msgs << "#{e.message}"
       end
 
-      Sprat::Result.new(@id, params, api.make_uri(params), json, (msgs.empty? ? 'PASS' : 'FAIL'), msgs.join('.'))
+      Sprat::Result.new(params: params, request: api.make_uri(params), response: json, result: (msgs.empty? ? 'PASS' : 'FAIL'), reason: msgs.join('.'))
 
     end
 

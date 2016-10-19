@@ -1,24 +1,23 @@
 module Sprat
   class Result
 
-    attr_accessor :id, :params, :request, :response, :result, :reason
+    include DataMapper::Resource
 
-    def initialize(id, params, request, response, result, reason)
-      @id = id
-      @params = params
-      @request = request
-      @response = response
-      @result = result
-      @reason = reason
+    property :id,       Serial
+    property :params,   Text
+    property :request,  Text
+    property :response, Text
+    property :result,   Text
+    property :reason,   Text
+
+    belongs_to :job
+
+    def passed?
+      result == 'PASS'
     end
 
-    def to_json
-      JSON.dump ({id: id, params: params, request: request, response: response, result: result, reason: reason})
-    end
-
-    def self.from_json(json)
-      data = JSON.load(json)
-      self.new(data['id'], data['params'], data['request'], data['response'], data['result'], data['reason'])
+    def failed?
+      result == 'FAIL'
     end
 
   end

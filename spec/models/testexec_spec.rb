@@ -1,6 +1,6 @@
 require_relative '../../app.rb'
 
-#  NB file can't be called 'test_spec.rb' because rspec doesn't redognise it by default
+#  NB file can't be called 'test_spec.rb' because rspec doesn't recognise it by default
 
 describe Sprat::Test do
 
@@ -9,7 +9,7 @@ describe Sprat::Test do
     test = Sprat::Test.new(1,{},[])
 
     api = double(:api)
-    expect(api).to receive(:make_call) {''}
+    expect(api).to receive(:make_call).and_return('')
     expect(api).to receive(:make_uri)
 
     results = test.exec(api)

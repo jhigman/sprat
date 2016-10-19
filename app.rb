@@ -1,4 +1,7 @@
 require 'rubygems'
+require 'data_mapper'
+require 'dm-core'
+require 'dm-redis-adapter'
 require 'sinatra'
 require 'sinatra/config_file'
 require 'yaml'
@@ -22,7 +25,8 @@ require_relative 'routes/init'
 
 config_file 'config/config.yml'
 
-class SpratTestRunner < Sinatra::Application
+
+class SpratApp < Sinatra::Application
 
   enable :sessions
 
@@ -30,13 +34,18 @@ class SpratTestRunner < Sinatra::Application
 
   if ENV["REDISCLOUD_URL"]
     uri = URI.parse(ENV["REDISCLOUD_URL"])
-    redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-  else
-    redis = Redis.new
+    redis_host = uri.host
+    redis_port = uri.port
+    redis_password = uri.password
   end
 
-  Resque.redis = redis
+  DataMapper.setup :default, { adapter: 'redis', host: redis_host, port: redis_port, password: redis_password}
+  Resque.redis = Redis.new(host: redis_host, port: redis_port, password: redis_password)
 
-  set :store, Sprat::Store.new(redis)
+  DataMapper.finalize
+
+  DataMapper::Model.raise_on_save_failure = true
+
+  DataMapper.auto_migrate!
 
 end
