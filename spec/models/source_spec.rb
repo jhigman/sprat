@@ -4,8 +4,11 @@ describe Sprat::Source do
 
   class DummySheet
 
+    attr_accessor :save_count
+
     def initialize(rows)
       @rows = rows
+      @save_count = 0
     end
 
     def num_rows
@@ -22,6 +25,10 @@ describe Sprat::Source do
 
     def row(idx)
       @rows[idx-1]
+    end
+
+    def save
+      @save_count += 1
     end
 
   end
@@ -73,7 +80,26 @@ describe Sprat::Source do
     source = Sprat::Source.new(DummySheet.new(rows))
 
     params = { 'PARAM1' => 'aaa' }
-    expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }, ]
+    expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
+    expected_test = Sprat::Test.new(params, expectations)
+
+    expect(source.tests).to eq([expected_test])
+
+  end
+
+  it "uses paths for expectations if specified" do
+
+    rows = [
+      ['parameters', 'param1'],
+      ['expectation1', '/some/path'],
+      ['tests','result','reason','param1','expectation1'],
+      ['','','','aaa','111'],
+    ]
+
+    source = Sprat::Source.new(DummySheet.new(rows))
+
+    params = { 'param1' => 'aaa' }
+    expectations = [{ 'label' => 'expectation1', 'path' => '/some/path', 'value' => '111' }]
     expected_test = Sprat::Test.new(params, expectations)
 
     expect(source.tests).to eq([expected_test])
@@ -92,7 +118,7 @@ describe Sprat::Source do
     source = Sprat::Source.new(DummySheet.new(rows))
 
     params = { 'param1' => 'aaa' }
-    expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }, ]
+    expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
     expected_test = Sprat::Test.new(params, expectations)
 
     expect(source.tests).to eq([expected_test])
@@ -119,22 +145,61 @@ describe Sprat::Source do
   end
 
 
-  it "writes values back to the origin" do
+  it "clears results on origin if empty results written" do
 
     rows = [
-      [''],
-      ['Started at', ''],
-      ['Status', ''],
+      ['Tests','Result','Reason','param1','expectation1'],
+      ['','PASS','','aaa','111'],
+      ['','FAIL','did not match expectation','bbb','222'],
+    ]
+
+    sheet = DummySheet.new(rows)
+    source = Sprat::Source.new(sheet)
+    job = Sprat::Job.new
+
+    source.write(job)
+
+    expect(sheet.get(2,2)).to eql('')
+    expect(sheet.get(2,3)).to eql('')
+
+    expect(sheet.get(3,2)).to eql('')
+    expect(sheet.get(3,3)).to eql('')
+
+    expect(sheet.save_count).to eql(1)
+
+  end
+
+  it "writes job details and results" do
+
+    rows = [
+      ['status', ''],
+      ['started at', ''],
+      ['finished at', ''],
+      ['Tests','Result','Reason','param1','expectation1'],
+      ['','','','aaa','111'],
+      ['','','','bbb','222'],
     ]
 
     sheet = DummySheet.new(rows)
     source = Sprat::Source.new(sheet)
 
-    source.set('Started at', '2016-01-02')
-    source.set('Status', 'Running')
+    start = DateTime.now
+    finish = DateTime.now + 1000
+    result_1 = Sprat::Result.new(result: 'FAIL', reason: 'oops')
+    result_2 = Sprat::Result.new(result: 'PASS', reason: '')
+    job = Sprat::Job.new(status: 'FAILED', started_at: start, finished_at: nil, results: [result_1, result_2])
 
-    expect(sheet.get(2,2)).to eql('2016-01-02')
-    expect(sheet.get(3,2)).to eql('Running')
+    source.write(job)
+
+    expect(sheet.get(1,2)).to eql('FAILED')
+    expect(sheet.get(2,2)).to eql(start.to_s)
+    expect(sheet.get(3,2)).to eql('')
+    expect(sheet.get(5,2)).to eql('FAIL')
+    expect(sheet.get(5,3)).to eql('oops')
+    expect(sheet.get(6,2)).to eql('PASS')
+    expect(sheet.get(6,3)).to eql('')
+
+    expect(sheet.save_count).to eql(1)
 
   end
 
