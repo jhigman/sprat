@@ -51,7 +51,7 @@ module Sprat
         ignore_names = (['tests','result','reason'] + get_array('ignore') + parameters).map(&:downcase)
         header_paths = paths(headers)
         while (row = @sheet.row(idx + test_id))
-          tests << Sprat::Test.new(test_id, inputs(row, headers, parameters), outputs(row, headers, ignore_names, header_paths))
+          tests << Sprat::Test.new(inputs(row, headers, parameters), outputs(row, headers, ignore_names, header_paths))
           test_id += 1
         end
       end
@@ -77,6 +77,8 @@ module Sprat
     def get_array(name)
       if values = get(name)
         values.split(',').map(&:strip)
+      else
+        []
       end
     end
 

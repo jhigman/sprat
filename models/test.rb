@@ -1,12 +1,11 @@
 module Sprat
   class Test
 
-    attr_accessor :id, :inputs, :outputs
+    attr_accessor :params, :expectations
 
-    def initialize(id, inputs, outputs)
-      @id = id
-      @inputs = inputs
-      @outputs = outputs
+    def initialize(params, expectations)
+      @params = params
+      @expectations = expectations
     end
 
 
@@ -16,9 +15,7 @@ module Sprat
 
       begin
 
-        params = @inputs
-
-        json = api.make_call(params)
+        json = api.make_call(@params)
 
         if json.empty?
           msgs << "Response from api was empty"
@@ -26,7 +23,7 @@ module Sprat
           response = JSON.parse(json)
 
           matcher = ExpectationsMatcher.create(response)
-          msgs = matcher.match(@outputs)
+          msgs = matcher.match(@expectations)
 
         end
 
@@ -37,9 +34,12 @@ module Sprat
         msgs << "#{e.message}"
       end
 
-      Sprat::Result.new(params: params, request: api.make_uri(params), response: json, result: (msgs.empty? ? 'PASS' : 'FAIL'), reason: msgs.join('.'))
+      Sprat::Result.new(params: @params, request: api.make_uri(@params), response: json, result: (msgs.empty? ? 'PASS' : 'FAIL'), reason: msgs.join('.'))
 
     end
 
+    def ==(other)
+      other.params == @params && other.expectations == @expectations
+    end
   end
 end

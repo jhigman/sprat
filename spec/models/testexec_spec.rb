@@ -6,7 +6,7 @@ describe Sprat::Test do
 
   it "should handle empty responses in exec" do
 
-    test = Sprat::Test.new(1,{},[])
+    test = Sprat::Test.new({},[])
 
     api = double(:api)
     expect(api).to receive(:make_call).and_return('')
