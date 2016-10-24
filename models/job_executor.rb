@@ -15,10 +15,7 @@ module Sprat
 
       job.update!(status: 'Running', started_at: Time.now)
 
-      unless job.local
-        @source.save_job(job)
-        @source.save_results([])
-      end
+      @source.write(job) unless job.local
 
       api = @source.get_api(job.host)
       tests = @source.tests
@@ -37,10 +34,7 @@ module Sprat
 
       job.update!(status: status, reason: reason, finished_at: Time.now)
 
-      unless job.local
-        @source.save_job(job)
-        @source.save_results(job.results)
-      end
+      @source.write(job) unless job.local
 
     end
 
