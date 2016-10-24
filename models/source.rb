@@ -8,11 +8,6 @@ module Sprat
     end
 
 
-    def config
-      @config ||= parse(@sheet)
-    end
-
-
     def tests
       tests = []
       if config['tests']
@@ -43,6 +38,11 @@ module Sprat
 
 
     private
+
+
+    def config
+      @config ||= parse(@sheet)
+    end
 
 
     def parse(sheet)
