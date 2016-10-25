@@ -22,8 +22,9 @@ module Sprat
 
       begin
         tests.each do |test|
-          job.results << test.exec(api)
-          job.save!
+          result = test.exec(api)
+          job.results << result
+          result.save!
         end
         status = status_message(job.results)
         reason = ''
