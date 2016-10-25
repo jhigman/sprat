@@ -13,20 +13,12 @@ module Sprat
       if config['tests']
         idx = config['tests'][:row] + 1
         while (row = @sheet.row(idx))
-          tests << Sprat::Test.new(inputs(row), outputs(row))
+          tests << Sprat::Test.new(get('api'), inputs(row), outputs(row))
           idx += 1
         end
       end
       tests
     end
-
-
-    def get_api(host = nil)
-      api_url = get('api')
-      api_key = get('apikey')
-      Sprat::API.new(host, api_url, api_key)
-    end
-
 
 
     def write(job)
@@ -77,6 +69,9 @@ module Sprat
         if idx = headers.map(&:downcase).find_index(parameter.downcase)
           inputs[parameter] = row[idx]
         end
+      end
+      if apikey = get('apikey')
+        inputs['apikey'] = apikey
       end
       inputs
     end

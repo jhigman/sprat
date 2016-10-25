@@ -36,6 +36,7 @@ describe Sprat::Source do
   it "creates expected test" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'param1'],
       ['tests','result','reason','param1','expectation1'],
       ['','','','aaa','111'],
@@ -45,7 +46,7 @@ describe Sprat::Source do
 
     params = { 'param1' => 'aaa' }
     expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
-    expected_test = Sprat::Test.new(params, expectations)
+    expected_test = Sprat::Test.new('/', params, expectations)
 
     expect(source.tests).to eq([expected_test])
 
@@ -54,6 +55,7 @@ describe Sprat::Source do
   it "ignores case of column names" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'param1'],
       ['TEsts','Result','REASON','param1','expectation1'],
       ['','','','aaa','111'],
@@ -63,7 +65,7 @@ describe Sprat::Source do
 
     params = { 'param1' => 'aaa' }
     expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
-    expected_test = Sprat::Test.new(params, expectations)
+    expected_test = Sprat::Test.new('/', params, expectations)
 
     expect(source.tests).to eq([expected_test])
 
@@ -72,6 +74,7 @@ describe Sprat::Source do
   it "uses case of parameter list for params" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'PARAM1'],
       ['tests','result','reason','param1','expectation1'],
       ['','','','aaa','111'],
@@ -81,7 +84,7 @@ describe Sprat::Source do
 
     params = { 'PARAM1' => 'aaa' }
     expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
-    expected_test = Sprat::Test.new(params, expectations)
+    expected_test = Sprat::Test.new('/', params, expectations)
 
     expect(source.tests).to eq([expected_test])
 
@@ -90,6 +93,7 @@ describe Sprat::Source do
   it "uses paths for expectations if specified" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'param1'],
       ['expectation1', '/some/path'],
       ['tests','result','reason','param1','expectation1'],
@@ -100,7 +104,7 @@ describe Sprat::Source do
 
     params = { 'param1' => 'aaa' }
     expectations = [{ 'label' => 'expectation1', 'path' => '/some/path', 'value' => '111' }]
-    expected_test = Sprat::Test.new(params, expectations)
+    expected_test = Sprat::Test.new('/', params, expectations)
 
     expect(source.tests).to eq([expected_test])
 
@@ -109,6 +113,7 @@ describe Sprat::Source do
   it "ignores specified columns" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'param1'],
       ['ignore', 'comments'],
       ['tests','result','reason','comments','param1','expectation1'],
@@ -119,7 +124,7 @@ describe Sprat::Source do
 
     params = { 'param1' => 'aaa' }
     expectations = [{ 'label' => 'expectation1', 'path' => 'expectation1', 'value' => '111' }]
-    expected_test = Sprat::Test.new(params, expectations)
+    expected_test = Sprat::Test.new('/', params, expectations)
 
     expect(source.tests).to eq([expected_test])
 
@@ -128,6 +133,7 @@ describe Sprat::Source do
   it "returns multiple tests" do
 
     rows = [
+      ['api', '/'],
       ['parameters', 'param1'],
       ['Tests','Result','Reason','param1','expectation1'],
       ['','','','aaa','111'],

@@ -17,7 +17,7 @@
     %dt Time to complete
     %dd= @job.time_to_complete || '--'
     %dt Tests
-    %dd= @results.size
+    %dd= @job.results.size
     %dt Status
     %dd= @job.status
     - if @job.reason
@@ -39,13 +39,13 @@
       %th Parameters
       %th Response
     %tbody
-      - @results.each do |result|
+      - @job.results.each_with_index do |result, idx|
         %tr
-          %td= result.id
+          %td= idx + 1
           %td= result.result
           %td= result.reason
           %td
-            %a(href='#{result.request}') #{result.params}
+            %a(href="#{@api.make_uri(result.uri,eval(result.params))}") #{result.params}
           %td= result.response
 
 - else

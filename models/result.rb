@@ -4,8 +4,8 @@ module Sprat
     include DataMapper::Resource
 
     property :id,       Serial
+    property :uri,      Text
     property :params,   Text
-    property :request,  Text
     property :response, Text
     property :result,   Text
     property :reason,   Text

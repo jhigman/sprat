@@ -1,8 +1,8 @@
 describe Sprat::JobExecutor do
 
-  it "should exec job" do
+  it "show pass if all tests pass" do
 
-    result = Sprat::Result.new
+    result = Sprat::Result.new(result: 'PASS')
 
     api = double(:api)
 
@@ -10,18 +10,18 @@ describe Sprat::JobExecutor do
     expect(test).to receive(:exec).with(api).and_return(result)
 
     source = double(:source)
-    expect(source).to receive(:get_api).with('google.com').and_return(api)
     expect(source).to receive(:tests).and_return([test])
 
-    job = Sprat::Job.create(local: true, host: 'google.com')
+    job = Sprat::Job.create(local: true)
 
-    Sprat::JobExecutor.new(source).exec(job)
+    Sprat::JobExecutor.new(source, api).exec(job)
 
+    expect(job.status).to eq('PASS')
     expect(job.results).to eq([result])
 
   end
 
-  it "should set status" do
+  it "shows fail if one test fails" do
 
     api = double(:api)
 
@@ -35,11 +35,10 @@ describe Sprat::JobExecutor do
     expect(test2).to receive(:exec).with(api).and_return(result2)
 
     source = double(:source)
-    expect(source).to receive(:get_api).with('google.com').and_return(api)
     expect(source).to receive(:tests).and_return([test1, test2])
 
-    job = Sprat::Job.create(local: true, host: 'google.com')
-    Sprat::JobExecutor.new(source).exec(job)
+    job = Sprat::Job.create(local: true)
+    Sprat::JobExecutor.new(source, api).exec(job)
 
     expect(job.status).to eql('FAIL (1 errors)')
 
