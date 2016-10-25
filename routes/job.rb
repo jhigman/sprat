@@ -63,9 +63,8 @@ post '/jobs/summary' do
 end
 
 get '/jobs/:id' do
-  id = params[:id]
-  @job = Sprat::Job.get!(id)
-  @results = @job.results
+  @job = Sprat::Job.get!(params[:id])
+  @api = Sprat::API.new(@job.host)
   haml :job
 end
 

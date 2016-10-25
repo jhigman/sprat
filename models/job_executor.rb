@@ -1,8 +1,9 @@
 module Sprat
   class JobExecutor
 
-    def initialize(source)
+    def initialize(source, api)
       @source = source
+      @api = api
     end
 
     def status_message(results)
@@ -17,12 +18,11 @@ module Sprat
 
       @source.write(job) unless job.local
 
-      api = @source.get_api(job.host)
       tests = @source.tests
 
       begin
         tests.each do |test|
-          result = test.exec(api)
+          result = test.exec(@api)
           job.results << result
           result.save!
         end

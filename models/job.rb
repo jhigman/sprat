@@ -28,7 +28,8 @@ module Sprat
     def self.perform(id)
       job = Sprat::Job.get!(id)
       source = Sprat::Source.new(Sprat::Sheet.new(job.spreadsheet, job.worksheet))
-      Sprat::JobExecutor.new(source).exec(job)
+      api = Sprat::API.new(job.host)
+      Sprat::JobExecutor.new(source, api).exec(job)
     end
 
   end
