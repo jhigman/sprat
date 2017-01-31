@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'data_mapper'
 require 'dm-core'
-require 'dm-redis-adapter'
+require 'dm-postgres-adapter'
 require 'sinatra'
 require 'sinatra/config_file'
 require 'yaml'
@@ -39,13 +39,15 @@ class SpratApp < Sinatra::Application
     redis_password = uri.password
   end
 
-  DataMapper.setup :default, { adapter: 'redis', host: redis_host, port: redis_port, password: redis_password}
+  DataMapper.setup :default, 'postgres://jhigman@localhost/testrunner'
+
+
   Resque.redis = Redis.new(host: redis_host, port: redis_port, password: redis_password)
 
   DataMapper.finalize
 
   DataMapper::Model.raise_on_save_failure = true
 
-  DataMapper.auto_migrate!
+  DataMapper.auto_upgrade!
 
 end

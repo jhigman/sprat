@@ -17,7 +17,8 @@ gem 'resque'
 gem 'capistrano'
 gem 'capistrano-bundler'
 gem 'data_mapper'
-gem 'dm-redis-adapter'
+# gem 'dm-redis-adapter'
+gem 'dm-postgres-adapter'
 
 group :development do
   gem 'minitest'

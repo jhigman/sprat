@@ -26,14 +26,15 @@ module Sprat
           job.results << result
           result.save!
         end
-        status = status_message(job.results)
-        reason = ''
+        job.status = status_message(job.results)
+        job.reason = ''
       rescue => e
-        status = "FAIL (#{e.message})"
-        reason = e.message + e.backtrace.inspect
+        job.status = "FAIL (#{e.message})"
+        job.reason = e.message + e.backtrace.inspect
       end
 
-      job.update!(status: status, reason: reason, finished_at: Time.now)
+      job.finished_at = Time.now
+      job.save!
 
       @source.write(job) unless job.local
 

@@ -56,6 +56,8 @@ GEM
       dm-transactions (~> 1.2.0)
       dm-types (~> 1.2.0)
       dm-validations (~> 1.2.0)
+    data_objects (0.10.17)
+      addressable (~> 2.1)
     debugger-linecache (1.2.0)
     diff-lcs (1.2.5)
     dm-aggregates (1.2.0)
@@ -64,14 +66,14 @@ GEM
       dm-core (~> 1.2.0)
     dm-core (1.2.1)
       addressable (~> 2.3)
+    dm-do-adapter (1.2.0)
+      data_objects (~> 0.10.6)
+      dm-core (~> 1.2.0)
     dm-migrations (1.2.0)
       dm-core (~> 1.2.0)
-    dm-redis-adapter (0.10.1)
-      dm-core (>= 1.2.0)
-      dm-types (>= 1.2.0)
-      dm-validations (>= 1.2.0)
-      hiredis (~> 0.4.0)
-      redis (>= 3.0.4)
+    dm-postgres-adapter (1.2.0)
+      dm-do-adapter (~> 1.2.0)
+      do_postgres (~> 0.10.6)
     dm-serializer (1.2.2)
       dm-core (~> 1.2.0)
       fastercsv (~> 1.5)
@@ -92,6 +94,8 @@ GEM
       uuidtools (~> 2.1)
     dm-validations (1.2.0)
       dm-core (~> 1.2.0)
+    do_postgres (0.10.17)
+      data_objects (= 0.10.17)
     eventmachine (1.2.0.1)
     extlib (0.9.16)
     faraday (0.9.0)
@@ -111,7 +115,6 @@ GEM
       google-api-client
     haml (4.0.5)
       tilt
-    hiredis (0.4.5)
     i18n (0.6.11)
     json (1.8.1)
     json_pure (1.8.3)
@@ -218,7 +221,7 @@ DEPENDENCIES
   capistrano
   capistrano-bundler
   data_mapper
-  dm-redis-adapter
+  dm-postgres-adapter
   google_api
   google_drive!
   haml
@@ -239,4 +242,4 @@ DEPENDENCIES
   unicorn
 
 BUNDLED WITH
-   1.13.3
+   1.13.7
