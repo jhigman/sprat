@@ -33,15 +33,15 @@ class SpratApp < Sinatra::Application
   set :session_secret, 'my sooper secret'
 
   if ENV["GOOGLE_CLIENT_EMAIL"]
-    google_client_email = ENV["GOOGLE_CLIENT_EMAIL"]
+    settings.google_client_email = ENV["GOOGLE_CLIENT_EMAIL"]
   end
 
   if ENV["GOOGLE_P12_FILE"]
-    google_p12_file = ENV["GOOGLE_P12_FILE"]
+    settings.google_p12_file = ENV["GOOGLE_P12_FILE"]
   end
 
   if ENV["GOOGLE_P12_SECRET"]
-    google_p12_secret = ENV["GOOGLE_P12_SECRET"]
+    settings.google_p12_secret = ENV["GOOGLE_P12_SECRET"]
   end
 
   if ENV["REDISCLOUD_URL"]
