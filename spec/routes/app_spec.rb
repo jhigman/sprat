@@ -22,4 +22,12 @@ describe 'Sinatra App' do
     expect(last_response.body).to include("Jobs")
   end
 
+  it "should truncate jobs" do
+    Sprat::Job.destroy
+    5.times { Sprat::Job.new.save }
+    expect(Sprat::Job.all.size).to eql(5)
+    post '/truncate?keep=2'
+    expect(Sprat::Job.all.size).to eql(2)
+  end
+
 end

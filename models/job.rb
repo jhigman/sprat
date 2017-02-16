@@ -14,7 +14,7 @@ module Sprat
     property :started_at,   DateTime
     property :finished_at,  DateTime
 
-    has n, :results
+    has n, :results, :constraint => :destroy
 
     @queue = :test_jobs
 
